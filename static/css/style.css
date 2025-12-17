@@ -1,0 +1,1849 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+/*=============================     LOGIN   ========================================*/
+.contlog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/static/images/template.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1; /* Mantém o fundo atrás de outros elementos */
+  opacity: 0.25;
+}
+
+.container-login {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1; /* Mantém o conteúdo acima do fundo */
+}
+
+.logo {
+  position: absolute;
+  top: 5%; /* Ajuste para manter a logo no topo, mas visível */
+  width: 10%;
+  height: 20%;
+  z-index: 1;
+  align-items: center;
+  text-align: center;
+  top: 8%;
+  left: 700px;
+}
+
+.login {
+  position: absolute;
+  background: rgba(219, 222, 231, 0.5);
+  padding: 2rem;
+  height: 450px;
+  width: 330px;
+  border-radius: 30px;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  align-items: center;
+  top: 18%;
+  left: 40%;
+}
+
+.entrar {
+  margin-top: 4rem;
+  margin-bottom: 1.5rem;
+  color: #766767;
+}
+
+.input-box {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 0.8rem;
+  padding-left: 5rem;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  font-size: 1rem;
+}
+
+.input-box i {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.password {
+  position: relative;
+  margin-bottom: 1rem;
+}
+.password input {
+  width: 100%;
+  padding: 0.8rem;
+  padding-left: 5rem;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  font-size: 1rem;
+}
+.password i {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.btn {
+  width: 60%;
+  height: 3rem;
+  padding: 0.8rem;
+  background: linear-gradient(
+    to bottom,
+    rgba(178, 106, 35, 1) 0%,
+    rgba(191, 117, 50, 0.815) 100%
+  );
+  color: #000000;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 2rem;
+}
+
+.btn:hover {
+  color: black;
+  background-color: #164917;
+}
+
+.register-link {
+  margin-top: 5rem;
+}
+
+.register-link p {
+  font-size: 0.9rem;
+}
+
+.register-link a {
+  color: #000000;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+/*=============================     CADASTRO   ========================================*/
+.container-cadastro {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("imges/template.png");
+  background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
+  background-position: center; /* Centraliza a imagem */
+  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  z-index: -1;
+}
+.cadastrar {
+  position: absolute;
+  top: 10rem;
+  left: 43rem;
+  padding-top: 2rem;
+  color: #343333;
+}
+.cadastro {
+  position: absolute;
+  background: rgba(219, 222, 231, 0.5); /* Fundo branco semi-transparente */
+  padding: 2rem;
+  height: 450px;
+  width: 330px;
+  border-radius: 30px;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5); /* Sombra mais opaca */
+  text-align: center;
+  top: 18%;
+  left: 40%;
+}
+
+.input-cadastro {
+  position: relative;
+  top: 4rem;
+  margin-top: 1.5rem; /*Espaçamento acima*/
+  margin-bottom: 0rem; /*Espaçamento entre botões*/
+  width: 100%;
+  padding: 0.8rem;
+  height: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  font-size: 1rem;
+  text-align: center; /* Adiciona centralização do texto */
+}
+
+.input-cadastro i {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: #888;
+}
+.btnc {
+  position: absolute;
+  top: 22rem;
+  left: 6.5rem;
+  width: 8rem;
+  height: 2.7rem;
+  padding: 0.8rem;
+  background: linear-gradient(
+    to bottom,
+    rgba(178, 106, 35, 1) 0%,
+    rgba(191, 117, 50, 0.815) 100%
+  );
+  color: #000000;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 0rem; /*Espaçamento acima*/
+}
+
+.btnc:hover {
+  color: black;
+  background-color: #164917;
+}
+.vol {
+  position: absolute;
+  top: 1rem;
+  left: 16rem;
+}
+
+/*=============================     HOME PAGE ========================================*/
+.galeriashalon {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  padding-top: 2rem;
+  font-size: 3rem;
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #5b1b1bc9;
+  text-shadow: 1px 1px 2px rgba(133, 128, 128, 0.1); /* leve sombreamento */
+}
+
+.home-equipe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/static/images/template.png");
+  background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
+  background-position: center; /* Centraliza a imagem */
+  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  z-index: -1;
+  opacity: 0.1; /* Define a opacidade de todo o elemento */
+}
+
+.logo-home {
+  position: absolute;
+  top: 28px; /*Espaçamento acima*/
+  left: -35px;
+  width: 10%;
+  height: 20%;
+  z-index: 1;
+}
+
+/* Seção principal */
+.home {
+  padding: 10px 10px; /* Reduz o espaçamento superior/inferior */
+  background-color: #fffaf7;
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+}
+
+.home-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0px; /* Reduz espaço entre os cards */
+  max-width: 1000px; /* Limita largura máxima */
+  width: 100%;
+  justify-items: center;
+}
+
+/* Links de serviço */
+.home-container a {
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s ease;
+}
+
+.home-container a:hover {
+  transform: scale(1.05);
+}
+
+/* Imagens dos serviços */
+.img-home {
+  width: 13rem;
+  height: 9rem;
+  max-width: 250px;
+  border-radius: 1rem;
+  border: 3px solid #422b2b;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Botões circulares */
+.home-container span[class^="btn-"] {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  width: 30px;
+  height: 30px;
+  background-color: #c398f5; /* Pode trocar por cor personalizada por serviço */
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Texto abaixo das imagens */
+.txt-btnpodologia,
+.txt-btnmanicure,
+.txt-btndepilacao,
+.txt-btnoutro {
+  margin-top: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: "Monda";
+}
+
+.barraesq-home {
+  position: fixed;
+  background: #b1b2b5;
+  height: 45.5rem;
+  width: 5.6rem;
+  top: 0px;
+  left: 0px;
+  border-radius: 15px 0 0 15px;
+}
+
+.barradir-home {
+  position: fixed;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border: none;
+  background: #b1b2b5;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 5.6rem;
+  height: 45.5rem;
+  top: 0px;
+  right: 0;
+}
+
+.oculto {
+  display: none;
+}
+
+/*=============================  PODOLOGIA   ========================================*/
+.container-profissional {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/static/images/template.png");
+  background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
+  background-position: center; /* Centraliza a imagem */
+  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  z-index: -1;
+  opacity: 0.1; /* Define a opacidade de todo o elemento */
+}
+.pod {
+  position: absolute;
+  border-top-right-radius: 10rem;
+  border-bottom-left-radius: 10rem;
+  width: 60rem;
+  height: 40rem;
+  top: 18px;
+  left: 0px;
+}
+.img-aman {
+  position: absolute;
+  width: 15rem;
+  height: 15rem;
+  top: 290px;
+  left: 1200px;
+}
+.sair-podologia {
+  position: absolute;
+  top: 550px;
+  left: 82rem;
+  font-size: 18px;
+  color: #000;
+}
+
+/*=============================     CARROUCEL   ========================================*/
+/* Carrossel geral */
+#promoCarousel {
+  max-width: 79%;
+  margin: 15px auto;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagens do carrossel */
+#promoCarousel .carousel-item img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  max-height: 350px; /* você pode ajustar essa altura */
+}
+
+/* Legendas (textos) */
+#promoCarousel .carousel-caption {
+  background-color: rgba(0, 0, 0, 0.5); /* fundo escuro transparente */
+  padding: 15px;
+  border-radius: 8px;
+}
+
+/* Textos das legendas */
+#promoCarousel .carousel-caption h5,
+#promoCarousel .carousel-caption p {
+  color: #fff;
+  text-shadow: 1px 1px 3px #000;
+}
+
+/* Botões de navegação */
+#promoCarousel .carousel-control-prev-icon,
+#promoCarousel .carousel-control-next-icon {
+  background-color: rgba(100, 100, 100, 0.5);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+/*=============================  PODÓLOGA  ===================================*/
+.servico-podologia {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/static/images/template.png");
+  background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
+  background-position: center; /* Centraliza a imagem */
+  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  z-index: -1;
+  opacity: 0.1; /* Define a opacidade de todo o elemento */
+}
+.logo-podologa {
+  position: absolute;
+  top: 28px; /*Espaçamento acima*/
+  left: -35px;
+  width: 10%;
+  height: 20%;
+  z-index: 1;
+}
+
+.img-am {
+  position: absolute;
+  width: 20rem;
+  height: 30rem;
+  top: 50px;
+  left: 1000px;
+  border-top-left-radius: 0rem;
+}
+.img-pod {
+  position: absolute;
+  top: 2rem;
+  width: 40rem;
+  height: 30rem;
+}
+
+/* Container geral da seção de serviços */
+section.servico {
+  padding: 20px 20px;
+  background-color: transparent; /* tom suave de fundo */
+}
+
+/* Grid responsivo para os itens */
+.box-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 0rem;
+}
+
+/* Estilo dos links como "cartões de serviço" */
+.box-container a {
+  display: block;
+  width: 11rem;
+  height: 20rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  text-decoration: none;
+  color: #333;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+/* Efeito hover */
+.box-container a:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.img-servico {
+  width: 100%; /* Preenche o box na largura */
+  height: 13rem; /* Mantém proporção */
+  border-radius: 8px;
+  object-fit: cover; /* Se quiser preencher completamente sem distorcer */
+}
+/* Estilo dos textos */
+.box-container p {
+  margin: 0px 0;
+  font-family: "Monda", sans-serif;
+}
+
+/* Título */
+.box-container p[class^="txt1-"] {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+/* Duração */
+.box-container p[class^="txt2-"] {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Preço */
+.box-container p[class^="txt3-"] {
+  font-size: 15px;
+  color: #020baf;
+  font-weight: 500;
+}
+.barraesq-am {
+  position: fixed;
+  background: #b1b2b5;
+  height: 45.5rem;
+  width: 5.6rem;
+  top: 0px;
+  left: 0px;
+  border-radius: 15px 0 0 15px;
+}
+
+.barradir-am {
+  position: fixed;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border: none;
+  background: #b1b2b5;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 5.6rem;
+  height: 45.5rem;
+  top: 0px;
+  right: 0;
+}
+.voltar-am {
+  position: fixed;
+  background: none;
+  color: transparent;
+  background-image: url("/static/images/voltar.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 3rem;
+  height: 3rem;
+  top: 22px;
+  left: 1450px;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+/*=============================   ESMALTERIA   ========================================*/
+.container-profissional {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/static/images/template.png");
+  background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
+  background-position: center; /* Centraliza a imagem */
+  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  z-index: -1;
+  opacity: 0.1; /* Define a opacidade de todo o elemento */
+}
+.mao {
+  position: absolute;
+  width: 30rem;
+  height: 34rem;
+  top: 185px;
+  left: 0px;
+}
+.texto1-prof {
+  position: absolute;
+  top: 25px;
+  left: 100px;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: transparent; /* Torna o texto transparente */
+  background: linear-gradient(
+    to top,
+    rgb(255, 255, 255),
+    rgb(0, 0, 0)
+  ); /* Gradiente horizontal da esquerda para a direita */
+  -webkit-background-clip: text; /* Necessário para navegadores WebKit (Chrome, Safari) */
+  background-clip: text; /* Aplicação do gradiente ao texto */
+  text-shadow: 0px 3px 5px rgba(0, 0, 0, 0.5); /* Sombra abaixo do texto */
+}
+
+.texto2-prof {
+  position: absolute;
+  top: 70px;
+  left: 100px;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: transparent; /* Torna o texto transparente */
+  background: linear-gradient(
+    to top,
+    rgb(255, 255, 255),
+    rgb(0, 0, 0)
+  ); /* Gradiente horizontal da esquerda para a direita */
+  -webkit-background-clip: text; /* Necessário para navegadores WebKit (Chrome, Safari) */
+  background-clip: text; /* Aplicação do gradiente ao texto */
+  text-shadow: 0px 3px 5px rgba(0, 0, 0, 0.5); /* Sombra abaixo do texto */
+}
+.texto3-prof {
+  position: absolute;
+  top: 120px;
+  left: 100px;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: transparent; /* Torna o texto transparente */
+  background: linear-gradient(
+    to top,
+    rgb(255, 255, 255),
+    rgb(0, 0, 0)
+  ); /* Gradiente horizontal da esquerda para a direita */
+  -webkit-background-clip: text; /* Necessário para navegadores WebKit (Chrome, Safari) */
+  background-clip: text; /* Aplicação do gradiente ao texto */
+  text-shadow: 0px 3px 5px rgba(0, 0, 0, 0.5); /* Sombra abaixo do texto */
+}
+.texto4-prof {
+  position: absolute;
+  top: 170px;
+  left: 100px;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: transparent; /* Torna o texto transparente */
+  background: linear-gradient(
+    to top,
+    rgb(255, 255, 255),
+    rgb(0, 0, 0)
+  ); /* Gradiente horizontal da esquerda para a direita */
+  -webkit-background-clip: text; /* Necessário para navegadores WebKit (Chrome, Safari) */
+  background-clip: text; /* Aplicação do gradiente ao texto */
+  text-shadow: 0px 3px 5px rgba(0, 0, 0, 0.5); /* Sombra abaixo do texto */
+}
+
+.img-yas {
+  position: absolute;
+  width: 15rem;
+  height: 15rem;
+  top: 290px;
+  left: 1200px;
+}
+
+.sair-esmalteria {
+  position: absolute;
+  top: 550px;
+  left: 82rem;
+  font-size: 18px;
+  color: #000;
+}
+
+/*=============================     MANICURE   ========================================*/
+.servico-esmalteria {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/static/images/template.png");
+  background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
+  background-position: center; /* Centraliza a imagem */
+  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  z-index: -1;
+  opacity: 0.1; /* Define a opacidade de todo o elemento */
+}
+.img-ju {
+  position: absolute;
+  width: 20rem;
+  height: 30rem;
+  top: 50px;
+  left: 1000px;
+  border-top-left-radius: 0rem;
+}
+.img-pod {
+  position: absolute;
+  top: 2rem;
+  width: 40rem;
+  height: 30rem;
+}
+
+/* Container geral da seção de serviços */
+section.servico {
+  padding: 20px 20px;
+  background-color: transparent; /* tom suave de fundo */
+}
+
+/* Grid responsivo para os itens */
+.box-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 0rem;
+}
+
+/* Estilo dos links como "cartões de serviço" */
+.box-container a {
+  display: block;
+  width: 11rem;
+  height: 20rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  text-decoration: none;
+  color: #333;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+/* Efeito hover */
+.box-container a:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.img-servico {
+  width: 100%; /* Preenche o box na largura */
+  height: 13rem; /* Mantém proporção */
+  border-radius: 8px;
+  object-fit: cover; /* Se quiser preencher completamente sem distorcer */
+}
+/* Estilo dos textos */
+.box-container p {
+  margin: 0px 0;
+  font-family: "Monda", sans-serif;
+}
+
+/* Título */
+.box-container p[class^="txt1-"] {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+/* Duração */
+.box-container p[class^="txt2-"] {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Preço */
+.box-container p[class^="txt3-"] {
+  font-size: 15px;
+  color: #210371;
+  font-weight: 500;
+}
+.barraesq-ju {
+  position: fixed;
+  background: #b1b2b5;
+  height: 45.5rem;
+  width: 5.6rem;
+  top: 0px;
+  left: 0px;
+  border-radius: 15px 0 0 15px;
+}
+
+.barradir-ju {
+  position: fixed;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border: none;
+  background: #b1b2b5;
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 5.6rem;
+  height: 45.5rem;
+  top: 0px;
+  right: 0;
+}
+.voltar-ju {
+  position: fixed;
+  background: none;
+  color: transparent;
+  background-image: url("/static/images/voltar.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 3rem;
+  height: 3rem;
+  top: 22px;
+  left: 1450px;
+  border-color: transparent;
+  cursor: pointer;
+}
+
+/*=============================     NOVO   ========================================*/
+
+/*=============================     NOVO   ========================================*/
+
+/*=============================     AGENDAMENTO   ========================================*/
+
+/* Fundo de tela */
+.container-agendamento {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/static/images/template.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1; /* Certifique-se de que o fundo fique abaixo do conteúdo */
+  opacity: 0.1;
+}
+
+.nome-manicure {
+  position: absolute;
+  margin-bottom: 1rem;
+  top: 30px;
+  left: 25rem;
+  font-weight: bold;
+}
+.nome-manicure input {
+  width: 18rem;
+  padding: 0.3rem;
+  padding-left: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #f9f7f7;
+}
+.nome-manicure i {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.whatsapp {
+  position: absolute;
+  margin-bottom: 1rem;
+  top: 30px;
+  left: 50rem;
+  font-weight: bold;
+}
+.whatsapp input {
+  width: 15rem;
+  padding: 0.3rem;
+  padding-left: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #f9f7f7;
+}
+.whatsapp i {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+/* Estilo para o calendário */
+.Calendario {
+  width: 50%;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 80px;
+}
+
+/* Estilo do cabeçalho do calendário */
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn-ant,
+.btn-pro {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+
+h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #a70b0b;
+}
+
+/* Estilo da tabela do calendário */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.semana td {
+  background-color: #e6e6e6;
+  font-weight: bold;
+}
+
+/* Estilo da agenda */
+.agenda {
+  width: 50%;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  padding: 8px;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  text-align: center; /* Centraliza o texto dentro da agenda */
+}
+
+.agenda h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+  text-align: center; /* Centraliza o título */
+}
+
+/* Estilo dos horários */
+#horarios {
+  width: 80%; /* Pode ser ajustado conforme a largura desejada */
+  margin-top: 20px;
+  border-collapse: collapse;
+  margin: 0 auto; /* Centraliza a tabela */
+  text-align: center; /* Centraliza o conteúdo dentro das células */
+  color: rgb(0, 0, 0);
+}
+
+#horarios th,
+#horarios td {
+  background-color: rgb(186, 187, 186);
+  padding: 10px;
+  border: 5px solid #f9f9f9;
+  text-align: center; /* Alinha o texto dentro das células da tabela */
+  border-radius: 14px;
+}
+
+#horarios th {
+  background-color: #333; /* Cor de fundo para os cabeçalhos */
+  color: white; /* Cor do texto do cabeçalho */
+}
+
+.pagamento-container {
+  text-align: center;
+}
+
+.agendar {
+  background-color: rgb(169, 181, 168);
+  display: flex; /* Ativa o Flexbox */
+  width: 120px;
+  height: 50px;
+  flex-direction: column; /* Organiza os itens na direção vertical */
+  justify-content: center; /* Centraliza os itens verticalmente */
+  align-items: center; /* Centraliza os itens horizontalmente */
+  margin: 0 auto; /* Centraliza o contêiner na página */
+  text-align: center; /* Alinha o texto no centro */
+  color: #000;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Estilo para as datas */
+.dia {
+  cursor: pointer;
+  text-align: center;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+}
+
+.dia:hover {
+  background-color: #f0f0f0;
+}
+
+/* Destacar o dia atual */
+.dia-atual {
+  font-weight: bold;
+  color: rgb(245, 3, 3); /* Texto vermelho */
+  border-radius: 50%; /* Torna o fundo arredondado */
+}
+
+/* Estilo para o dia selecionado */
+.data-selecionada {
+  background-color: #cfccba; /* Amarelo para a data selecionada */
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  border-radius: 15%;
+}
+
+/* Estilo para o horário selecionado */
+.horario-selecionado {
+  color: rgb(249, 249, 249); /* Cor do texto */
+  font-weight: bold; /* Negrito para destacar */
+  border: 2px solid #333; /* Borda para maior contraste */
+  border-radius: 5px; /* Bordas arredondadas */
+  cursor: pointer; /* Cursor de ponteiro ao passar o mouse */
+}
+
+td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+td:hover {
+  background-color: #f0f0f0;
+}
+
+tr {
+  height: 40px;
+}
+
+td {
+  width: 12.5%; /* 100% dividido por 8 colunas */
+}
+
+.past-date {
+  color: rgb(152, 146, 146); /* Cor do texto em branco para maior contraste */
+}
+
+.dia.hoje {
+  /*background-color: #f0ad4e;  Cor de fundo para a data atual */
+  color: rgb(255, 4, 4);
+  font-weight: bold;
+}
+
+.dia.selecionado {
+  background-color: #79929a; /* Cor de fundo para a data selecionada */
+  color: white;
+  font-weight: bold;
+  border-radius: 25%;
+}
+.horario.selecionado {
+  background-color: #79929a; /* Cor de fundo para o horário selecionado */
+  color: white;
+  font-weight: bold;
+  border-radius: 25%;
+}
+
+/* Estilo para horários indisponíveis */
+.indisponivel {
+  background-color: #f0f0f0;
+  color: #ccc;
+  pointer-events: none; /* Desabilita o clique */
+  cursor: not-allowed;
+}
+
+.horario {
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*=======================RESPONSIVIDADE=======================*/
+/*=======================RESPONSIVIDADE=======================*/
+/* Celulares */
+@media (max-width: 600px) {
+  /*=============================     LOGIN   ========================================*/
+  .logo {
+    position: absolute;
+    width: 44%;
+    height: auto;
+    z-index: 1;
+    text-align: center;
+    top: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .login {
+    position: absolute;
+    background: rgba(219, 222, 231, 0.5);
+    padding: 2rem;
+    height: 450px;
+    width: 330px;
+    border-radius: 30px;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .entrar {
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
+    color: #766767;
+  }
+
+  /*---------------- HOME PAGE -------------------*/
+.galeriashalon {
+  padding-top: 7rem;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #5b1b1bc9;
+}
+.logo-home {
+  position: absolute;
+  top: 0.5rem; /*Espaçamento acima*/
+  left: 8rem;
+  width: 35%;
+  height: auto;
+  z-index: 1;
+}
+
+/* Seção principal */
+.home {
+  padding: 10px 10px; /* Reduz o espaçamento superior/inferior */
+  background-color: #fffaf7;
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+}
+
+.home-container {
+  display: grid;
+  top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 0px; /* Reduz espaço entre os cards */
+  max-width: 1000px; /* Limita largura máxima */
+  width: 100%;
+  justify-items: center;
+}
+
+/* Links de serviço */
+.home-container a {
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.3s ease;
+}
+
+.home-container a:hover {
+  transform: scale(1.05);
+}
+
+/* Imagens dos serviços */
+.img-home {
+  width: 4rem;
+  height: 4rem;
+  max-width: 250px;
+  border-radius: 1rem;
+  border: 3px solid #422b2b;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Botões circulares */
+.home-container span[class^="btn-"] {
+  display: none;
+}
+
+/* Texto abaixo das imagens */
+.txt-btnpodologia,
+.txt-btnmanicure,
+.txt-btndepilacao,
+.txt-btnoutro {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: bold;
+  font-family: "Monda";
+}
+
+.barraesq-home {
+  display: none;
+}
+
+.barradir-home {
+  display: none;
+}
+.oculto {
+  display: none;
+}
+
+
+/*----------     AGENDAMENTO   -----------------*/
+.nome-manicure {
+  position: absolute;
+  margin-bottom: 1rem;
+  top: 5px;
+  left: 1rem;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.nome-manicure input {
+  width: 18rem;
+  padding: 0.3rem;
+  padding-left: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #f9f7f7;
+}
+
+.whatsapp {
+  position: absolute;
+  margin-bottom: 1rem;
+  top: 40px;
+  left: 1rem;
+  font-weight: bold;
+}
+.whatsapp input {
+  width: 16rem;
+  padding: 0.3rem;
+  padding-left: 3rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  background-color: #f9f7f7;
+}
+.Calendario {
+  width: 100%;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 80px;margin-left: 0rem;
+}
+/* Estilo da agenda */
+.agenda {
+  width: 100%;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  padding: 8px;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  text-align: center; /* Centraliza o texto dentro da agenda */
+}
+/* Estilo dos horários */
+#horarios {
+  width: 80%; /* Pode ser ajustado conforme a largura desejada */
+  margin-top: 20px;
+  border-collapse: collapse;
+  margin: 0 auto; /* Centraliza a tabela */
+  text-align: center; /* Centraliza o conteúdo dentro das células */
+  color: rgb(0, 0, 0);
+}
+
+.pagamento-container {
+  text-align: center;
+}
+
+.agendar {
+  background-color: rgb(169, 181, 168);
+  display: flex; /* Ativa o Flexbox */
+  width: 120px;
+  height: 50px;
+  flex-direction: column; /* Organiza os itens na direção vertical */
+  justify-content: center; /* Centraliza os itens verticalmente */
+  align-items: center; /* Centraliza os itens horizontalmente */
+  margin: 0 auto; /* Centraliza o contêiner na página */
+  text-align: center; /* Alinha o texto no centro */
+  color: #000;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/*=============================     CARROUCEL   ========================================*/
+/* Carrossel geral */
+#promoCarousel {
+  max-width: 100%;
+  margin: 15px auto;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagens do carrossel */
+#promoCarousel .carousel-item img {
+  width: 100%;
+  height: 13rem;
+  object-fit: cover;
+  max-height: 370px; /* você pode ajustar essa altura */
+}
+
+/* Legendas (textos) */
+#promoCarousel .carousel-caption {
+  background-color: rgba(0, 0, 0, 0.5); /* fundo escuro transparente */
+  padding: 15px;
+  border-radius: 8px;
+}
+
+/* Textos das legendas */
+#promoCarousel .carousel-caption h5,
+#promoCarousel .carousel-caption p {
+  color: #fff;
+  text-shadow: 1px 1px 3px #000;
+}
+
+/* Botões de navegação */
+#promoCarousel .carousel-control-prev-icon,
+#promoCarousel .carousel-control-next-icon {
+  background-color: rgba(100, 100, 100, 0.5);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+/*---------------------  PODÓLOGA  --------------------------*/
+.servico-podologia {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/static/images/template.png");
+  background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
+  background-position: center; /* Centraliza a imagem */
+  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  z-index: -1;
+  opacity: 0.1; /* Define a opacidade de todo o elemento */
+}
+.logo-podologa {
+  display: none;
+}
+.img-am {
+  position: absolute;
+  width: 20rem;
+  height: 30rem;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-top-left-radius: 0rem;
+}
+
+.img-pod {
+  position: absolute;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rem;
+  height: 30rem;
+}
+
+/* Container geral da seção de serviços */
+section.servico {
+  padding: 5px 5px;
+  background-color: transparent; /* tom suave de fundo */
+}
+
+/* Grid responsivo para os itens */
+.box-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 0rem; /* opcional, pode ser só 'margin-top: 0;' */
+}
+
+
+/* Estilo dos links como "cartões de serviço" */
+.box-container a {
+  display: block;
+  width: 7rem;
+  height: 12rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  text-decoration: none;
+  color: #333;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+/* Efeito hover */
+.box-container a:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.img-servico {
+  width: 100%; /* Preenche o box na largura */
+  height: 7rem; /* Mantém proporção */
+  border-radius: 8px;
+  object-fit: cover; /* Se quiser preencher completamente sem distorcer */
+}
+/* Estilo dos textos */
+.box-container p {
+  margin: 0px 0;
+  font-family: "Monda", sans-serif;
+}
+
+/* Título */
+.box-container p[class^="txt1-"] {
+  margin-top: 0.3rem;
+  font-weight: bold;
+  font-size: 11.5px;
+  line-height: 1;
+}
+
+/* Duração */
+.box-container p[class^="txt2-"] {
+  font-size: 11px;
+  color: #666;
+}
+
+/* Preço */
+.box-container p[class^="txt3-"] {
+  font-size: 15px;
+  color: #020baf;
+  font-weight: 500;
+}
+.barraesq-am {
+  display: none;
+}
+
+.barradir-am {
+  display: none;
+}
+.voltar-am {
+  display: none;
+}
+
+}
+
+
+
+
+/* Tablets */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .logo {
+    position: absolute;
+    width: 35%;
+    height: auto;
+    z-index: 1;
+    text-align: center;
+    top: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .login {
+    position: absolute;
+    background: rgba(219, 222, 231, 0.5);
+    padding: 2rem;
+    height: 550px;
+    width: 430px;
+    border-radius: 30px;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .entrar {
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
+    color: #766767;
+  }
+
+  /*-------------------     CARROUCEL   -------------------------*/
+  #promoCarousel {
+    max-width: 120%;
+    margin: 15px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Imagens do carrossel */
+  #promoCarousel .carousel-item img {
+    width: 100%;
+    height: 22rem;
+    object-fit: cover;
+    max-height: 370px; /* você pode ajustar essa altura */
+  }
+
+  /* Legendas (textos) */
+  #promoCarousel .carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5); /* fundo escuro transparente */
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  /* Textos das legendas */
+  #promoCarousel .carousel-caption h5,
+  #promoCarousel .carousel-caption p {
+    color: #fff;
+    text-shadow: 1px 1px 3px #000;
+  }
+
+  /* Botões de navegação */
+  #promoCarousel .carousel-control-prev-icon,
+  #promoCarousel .carousel-control-next-icon {
+    background-color: rgba(100, 100, 100, 0.5);
+    border-radius: 50%;
+    padding: 10px;
+  }
+
+  /*---------------------  PODÓLOGA  --------------------------*/
+  .logo-podologa {
+    display: none;
+  }
+  .img-am {
+    position: absolute;
+    width: 20rem;
+    height: 30rem;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-top-left-radius: 0rem;
+  }
+
+  .img-pod {
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40rem;
+    height: 30rem;
+  }
+  /* Container geral da seção de serviços */
+  section.servico {
+    padding: 5px 5px;
+    background-color: transparent; /* tom suave de fundo */
+  }
+  /* Grid responsivo para os itens */
+  .box-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 colunas iguais */
+    row-gap: 30px;  /* espaçamento vertical maior */
+    column-gap: 10px; /* espaçamento entre colunas */
+    max-width: 950px;
+    margin: 0 auto;
+    margin-top: 2rem;
+
+    }
+  /* Estilo dos links como "cartões de serviço" */
+  .box-container a {
+    display: block;
+    width: 11rem;
+    height: 17rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+
+  /* Efeito hover */
+  .box-container a:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  .img-servico {
+    width: 100%; /* Preenche o box na largura */
+    height: 12rem; /* Mantém proporção */
+    border-radius: 8px;
+    object-fit: cover; /* Se quiser preencher completamente sem distorcer */
+  }
+  /* Estilo dos textos */
+  .box-container p {
+    margin: 0px 0;
+    font-family: "Monda", sans-serif;
+  }
+
+  /* Título */
+  .box-container p[class^="txt1-"] {
+    margin-top: 0.3rem;
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 1;
+  }
+
+  /* Duração */
+  .box-container p[class^="txt2-"] {
+    font-size: 11px;
+    color: #666;
+  }
+
+  /* Preço */
+  .box-container p[class^="txt3-"] {
+    font-size: 15px;
+    color: #020baf;
+    font-weight: 500;
+  }
+  .barraesq-am {
+    display: none;
+  }
+
+  .barradir-am {
+    display: none;
+  }
+  .voltar-am {
+    display: none;
+  }
+  }
+
+
+/* Desktop */
+@media (min-width: 1025px) and (max-width: 1439px) {
+  .logo {
+    position: absolute;
+    width: 25%;
+    height: auto;
+    z-index: 1;
+    text-align: center;
+    top: 0%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .login {
+    position: absolute;
+    background: rgba(219, 222, 231, 0.5);
+    padding: 4rem;
+    height: 550px;
+    width: 450px;
+    border-radius: 30px;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    top: 22%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .entrar {
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
+    color: #766767;
+  }
+
+
+
+  /*-----------------  PODÓLOGA  -------------------------*/
+  .servico-podologia {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/static/images/template.png");
+    background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat; /* Impede que a imagem se repita */
+    z-index: -1;
+    opacity: 0.1; /* Define a opacidade de todo o elemento */
+  }
+  .logo-podologa {
+    position: absolute;
+    top: 28px; /*Espaçamento acima*/
+    left: -2.5rem;
+    width: 13%;
+    height: 20%;
+    z-index: 1;
+  }
+
+  .img-am {
+    position: absolute;
+    width: 20rem;
+    height: 30rem;
+    top: 50px;
+    left: 1000px;
+    border-top-left-radius: 0rem;
+  }
+  .img-pod {
+    position: absolute;
+    top: 2rem;
+    width: 40rem;
+    height: 30rem;
+  }
+
+  /* Container geral da seção de serviços */
+  section.servico {
+    padding: 00px 20px;
+    background-color: transparent; /* tom suave de fundo */
+  }
+
+  /* Grid responsivo para os itens */
+  .box-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    margin-top: 0rem;
+  }
+
+  /* Estilo dos links como "cartões de serviço" */
+  .box-container a {
+    display: block;
+    width: 11rem;
+    height: 20rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    transition: transform 0.2s, box-shadow 0.3s;
+  }
+
+  /* Efeito hover */
+  .box-container a:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  .img-servico {
+    width: 100%; /* Preenche o box na largura */
+    height: 13rem; /* Mantém proporção */
+    border-radius: 8px;
+    object-fit: cover; /* Se quiser preencher completamente sem distorcer */
+  }
+  /* Estilo dos textos */
+  .box-container p {
+    margin: 0px 0;
+    font-family: "Monda", sans-serif;
+  }
+
+  /* Título */
+  .box-container p[class^="txt1-"] {
+    font-weight: bold;
+    font-size: 13px;
+  }
+
+  /* Duração */
+  .box-container p[class^="txt2-"] {
+    font-size: 13px;
+    color: #666;
+  }
+
+  /* Preço */
+  .box-container p[class^="txt3-"] {
+    font-size: 15px;
+    color: #020baf;
+    font-weight: 500;
+  }
+  .barraesq-am {
+    position: fixed;
+    background: #b1b2b5;
+    height: 50rem;
+    width: 5.6rem;
+    top: 0px;
+    left: 0px;
+    border-radius: 15px 0 0 15px;
+  }
+
+  .barradir-am {
+    position: fixed;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border: none;
+    background: #b1b2b5;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 5.6rem;
+    height: 50rem;
+    top: 0px;
+    right: 0;
+  }
+  .voltar-am {
+    position: fixed;
+    background: none;
+    color: transparent;
+    background-image: url("/static/images/voltar.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 3rem;
+    height: 3rem;
+    top: 22px;
+    left: 1450px;
+    border-color: transparent;
+    cursor: pointer;
+  }
+
+}
+

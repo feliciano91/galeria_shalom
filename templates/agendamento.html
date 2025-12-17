@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento</title>
+    <!-- Usando url_for para referenciar o CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1 class="agend">Agendar</h1>
+    <form action="{{ url_for('agendar') }}" method="POST">
+        <div>
+            <label for="data">Data:</label>
+            <input type="date" id="data" name="data" required>
+        </div>
+        <div>
+            <label for="horario">Horário:</label>
+            <input type="time" id="horario" name="horario" required>
+        </div>
+        <div>
+            <label for="pagamento">Forma de pagamento:</label>
+            <select id="pagamento" name="pagamento" required>
+                <option value="cartao">Cartão de Crédito</option>
+                <option value="boleto">Boleto Bancário</option>
+                <option value="pix">PIX</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">Agendar</button>
+        </div>
+    </form>
+</body>
+</html>

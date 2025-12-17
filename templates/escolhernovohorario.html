@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Agendamento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/confirm.css') }}">
+</head>
+<body class="container-confirmar">
+    <img class="ponto" src="/static/images/ponto.png" alt="ponto" />
+    <h1 class="titullo">O horário escolhido não está disponível para o agendamento do serviço selecionado, devido à duração necessária para a realização desse atendimento.<br>Por favor, escolha outro horário disponível.<br><br>Agradecemos desde já pela sua compreensão!</h1>
+    <br>
+    <br>
+
+    <a class="novo-agendamento" href="{{ url_for('manicure') }}">Fazer outro agendamento</a>
+    <a class="sair" href="{{ url_for('index') }}">Sair</a>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Agendamento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/confirm.css') }}">
+</head>
+<body class="container-confirmar">
+    <h1 class="titulo">Agendamento Confirmado!</h1>
+    <p class="data"><strong>Data:</strong> {{ data }}</p>
+    <p class="hora"><strong>Horário:</strong> {{ horario }}</p>
+    <p class="pagamento"><strong>Forma de pagamento:</strong> {{ pagamento }}</p>
+    <br>
+    <br>
+    <p class="oss">OBS: Vai levar uma pisa se não pagar</p>
+
+    <a class="novo-agendamento" href="{{ url_for('manicure') }}">Fazer outro agendamento</a>
+    <a class="sair" href="{{ url_for('index') }}">Sair</a>
+
+</body>
+</html>

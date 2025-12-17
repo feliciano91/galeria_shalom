@@ -1,0 +1,180 @@
+/* confirm.css */
+
+body.container-confirmar {
+    display: flex;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url('/static/images/template.png');
+    flex-direction: column;   /* Organiza os itens na direção da coluna */
+    justify-content: center;  /* Centraliza verticalmente */
+    align-items: center;      /* Centraliza horizontalmente */
+    height: 100vh;            /* Faz com que o body ocupe toda a altura da tela */
+    margin: 0;                /* Remove qualquer margem padrão */
+    font-family: Arial, sans-serif; /* Definindo uma fonte básica */
+    text-align: center;       /* Centraliza o texto horizontalmente */
+}
+
+/* Adicionando sobreposição para melhorar a legibilidade */
+body.container-confirmar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(148, 145, 145, 0.5); /* Cor preta semitransparente */
+    z-index: -1; /* Garante que a sobreposição fique atrás do conteúdo */
+}
+
+/* Estilizando o título */
+.titulo {
+    font-size: 3rem;
+    color: #036003;
+    margin-bottom: 20px; /* Adicionando um espaço abaixo do título */
+}
+
+/* Estilizando os textos */
+.data,
+.hora,
+.pagamento {
+    color: #252424; /* Mudando a cor do texto para branco para contraste */
+    font-size: 1.5rem;
+    margin-bottom: 8px;  /* Adicionando espaço entre os elementos */
+}
+
+.mensagens-importantes {
+  background-color: #d8d7d3;
+  border: 1px solid #022503;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.aviso-destaque {
+  font-weight: bold;
+  color: #e65100; /* laranja escuro */
+  text-transform: uppercase;
+  margin-right: 5px;
+}
+
+.obs-destaque {
+  font-weight: bold;
+  color: #b71c1c; /* vermelho escuro */
+  text-transform: uppercase;
+  margin-right: 5px;
+}
+
+
+
+/* Estilizando o link */
+a.novo-agendamento {
+    display: inline-block;
+    margin-top: 20px;
+    margin-left: -150px;
+    padding: 10px 40px;
+    background-color: #000000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 15px;
+    font-size: 1.3rem;
+}
+
+a.novo-agendamento:hover {
+    background-color: #7a9fc8;
+}
+
+a.sair {
+    display: inline-block;
+    margin-top: -45px;
+    margin-left: 300px;
+    padding: 10px 20px;
+    background-color: #09294b;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 15px;
+    font-size: 1.3rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Celulares */
+@media (max-width: 600px) {
+    /* Estilizando o título */
+    .titulo {
+        font-size: 2rem;
+        color: #31650b;
+        margin-bottom: 20px; /* Adicionando um espaço abaixo do título */
+    }
+
+    /* Estilizando os textos */
+    .data,
+    .hora,
+    .pagamento {
+        color: #252424; /* Mudando a cor do texto para branco para contraste */
+        font-size: 1.5rem;
+        margin-bottom: 4px;  /* Adicionando espaço entre os elementos */
+    }
+
+    .mensagens-importantes {
+        height: 9rem;
+        background-color: #d8d7d3;
+        border: 1px solid #022503;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 0rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        font-size: 1.1rem;
+        }
+
+    .obs-destaque {
+        font-weight: bold;
+        color: #b71c1c; /* vermelho escuro */
+        text-transform: uppercase;
+        margin-right: 5px;
+        }
+
+
+
+    /* Estilizando o link */
+    a.novo-agendamento {
+        display: inline-block;
+        width: 13rem;
+        margin-top: 20px;
+        margin-left: -100px;
+        padding: 10px 40px;
+        background-color: #000000;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 15px;
+        font-size: 1.1rem;
+    }
+
+    a.novo-agendamento:hover {
+        background-color: #7a9fc8;
+    }
+
+    a.sair {
+        display: inline-block;
+        margin-top: -45px;
+        margin-left: 300px;
+        padding: 10px 20px;
+        background-color: #6f88a3;
+        color: #000000;
+        text-decoration: none;
+        border-radius: 15px;
+        font-size: 1.3rem;
+    }
+
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário de Agendamento</title>    
+    <script src="{{ url_for('static', filename='js/agendado.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/agendado.css') }}">
+</head>
+
+<body>
+    <h1>Agendamentos Realizados</h1>
+    <!-- Calendário -->
+    <div class="container-agendado"></div>
+    <a href="/manicure" class="volta-agendaju"></a>
+    <div id="calendario">
+        <header>
+            <button id="btn_prev">‹</button>
+            <h2 id="mes">Janeiro</h2>
+            <h2 id="ano">2025</h2>
+            <button id="btn_next">›</button>
+        </header>
+        <table>
+            <thead>
+                <tr class="semana">
+                    <th>Dom</th>
+                    <th>Seg</th>
+                    <th>Ter</th>
+                    <th>Qua</th>
+                    <th>Qui</th>
+                    <th>Sex</th>
+                    <th>Sab</th>
+                </tr>
+            </thead>
+            <tbody id="data">
+                <!-- Os dias serão preenchidos dinamicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tabela de Horários -->
+    <div id="horarios">
+        <h2 class="agendados">Horários Agendados</h2>
+        <table id="horario">
+            <tbody>
+                <!-- Horários serão inseridos aqui dinamicamente -->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PAGINA INICIAL</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <p class="galeriashalon">GALERIA SHALON</p>
+    <div class="home-equipe"></div>
+    <div class="laterall-home"></div>
+    <a href="/login">
+      <img class="logo-home" src="/static/images/logo.png" alt="logo-home" />
+    </a>
+    <div class="anuncios"></div>
+
+    <a href="/podologia">
+      <img src="/static/images/img1-a.png" alt="Profilaxia podal" class="img-servico">
+      <button type="button" class="btn-podologia"></button>
+      <p class="txt-btnpodologia">PODOLOGIA</p>
+    </a>
+
+    <a href="/esmalteria">
+      <button type="submit" class="btn-esmalteria2"></button>
+      <p class="txt-btnmanicure">MANICURE</p>
+    </a>
+
+    <a href="#">
+      <button type="submit" class="btn-esmalteria3"></button>
+      <p class="txt-btndepilacao">DEPILAÇÃO</p>
+    </a>
+
+    <a href="#"></a>
+      <button type="submit" class="btn-esmalteria4"></button>
+      <p class="txt-btnoutro">=======</p>
+    </a>
+  </body>
+</html>

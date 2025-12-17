@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Agendamento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/confirm.css') }}">
+</head>
+<body class="container-confirmar">
+    <h1 class="titulo">Solicitação de Agendamento Enviada com Sucesso</h1>
+    <p class="data"><strong>Data:</strong> {{ data }}</p>
+    <p class="hora"><strong>Horário:</strong> {{ horario }}</p>
+    <p class="pagamento"><strong>Forma de pagamento:</strong> {{ pagamento }}</p>
+    <br>
+    <br>
+    <div class="mensagens-importantes">
+        <p class="obs">
+            <span class="obs-destaque">OBS:</span> O pagamento deve ser realizado no dia do atendimento, conforme agendado.<br>Em caso de desistência com menos de 24 horas de antecedência, será cobrada uma taxa simbólica de R$15,00 referente ao horário reservado.
+        </p>
+    </div>
+
+    <a class="novo-agendamento" href="{{ url_for('manicure') }}">Fazer outro agendamento</a>
+    <a class="sair" href="{{ url_for('index') }}">Sair</a>
+</body>
+</html>

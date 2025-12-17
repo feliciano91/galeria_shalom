@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HOME-PAGE</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <p class="galeriashalon">GALERIA SHALON</p>
+    <div class="home-equipe"></div>
+    <div class="barraesq-home"></div>
+    <button class="barradir-home"></button>
+    <a href="/login">
+      <img class="logo-home" src="/static/images/logo.png" alt="logo-home" />
+    </a>
+
+    <!-- Carrossel -->
+    <div id="promoCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        
+        <div class="carousel-item active">
+          <img src="{{ url_for('static', filename='images/banner1.jpg') }}" class="d-block w-100" alt="Promoção 1">
+          <div class="carousel-caption d-none d-md-block">
+            <h5>50% OFF em todos os produtos!</h5>
+            <p>Não perca a nossa super promoção deste fim de semana.</p>
+          </div>
+        </div>
+
+        <div class="carousel-item">
+          <img src="{{ url_for('static', filename='images/banner2.jpg') }}" class="d-block w-100" alt="Promoção 2">
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Descontos exclusivos para novos clientes</h5>
+            <p>Ganhe descontos ainda maiores ao se cadastrar.</p>
+          </div>
+        </div>
+
+        <div class="carousel-item">
+          <img src="{{ url_for('static', filename='images/banner3.jpg') }}" class="d-block w-100" alt="Promoção 3">
+          <div class="carousel-caption d-none d-md-block">
+            <h5>Compre 1, leve 2!</h5>
+            <p>Promoção imperdível para você levar mais produtos por menos.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botões de navegação -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Anterior</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#promoCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Próximo</span>
+      </button>
+    </div>
+    <!-- Script do Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <section class="home" id="home">
+      <div class="home-container">
+        
+        <a href="/podologia">
+          <img src="/static/images/podologia.png" alt="Profilaxia podal" class="img-home">
+          <span class="btn-podologia" aria-label="Ir para Podologia"></span>
+          <p class="txt-btnpodologia">PODOLOGIA</p>
+        </a>
+
+        <a href="/esmalteria">
+          <img src="/static/images/mao.png" class="img-home">
+          <span class="btn-esmalteria2" aria-label="Ir para Esmalteria"></span>
+          <p class="txt-btnmanicure">MANICURE</p>
+        </a>
+
+        <a href="#">
+          <img src="/static/images/img1-a.png" class="img-home">
+          <span class="btn-esmalteria3" aria-label="Ir para Depilação"></span>
+          <p class="txt-btndepilacao">DEPILAÇÃO</p>
+        </a>
+
+        <a href="#">
+          <img src="/static/images/img1-a.png" class="img-home">
+          <span class="btn-esmalteria4" aria-label="Outros serviços"></span>
+          <p class="txt-btnoutro">OUTROS</p>
+        </a>
+
+      </div>
+    </section>
+
+  </body>
+</html>
