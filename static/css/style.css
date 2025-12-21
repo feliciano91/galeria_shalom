@@ -1188,14 +1188,14 @@ td {
 }
 
 .home-container {
-  display: grid;
-  top: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 0px; /* Reduz espaço entre os cards */
-  max-width: 1000px; /* Limita largura máxima */
-  width: 100%;
-  justify-items: center;
-}
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    justify-items: center;
+  }
 
 /* Links de serviço */
 .home-container a {
