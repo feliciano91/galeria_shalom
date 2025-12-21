@@ -1527,6 +1527,12 @@ section.servico {
   top: 33rem;
   left: 15rem;
 }
+.barraesq-ju {
+  display: none;
+ }
+ .barradir-ju {
+  display: none;
+ }
   
 }
 
