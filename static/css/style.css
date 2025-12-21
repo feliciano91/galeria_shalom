@@ -1497,6 +1497,37 @@ section.servico {
   display: none;
 }
 
+  
+/*---------------------  MANICURE  --------------------------*/
+.sair-esmalteria {
+  display: none;
+}
+.texto1-prof {
+  left: 1rem;
+}
+.texto2-prof {
+  left: 1rem;
+}
+.texto3-prof {
+  left: 1rem;
+}
+.texto4-prof {
+  left: 1rem;
+}
+
+.mao {
+  width: 20rem;
+  height: 25rem;
+  top: 185px;
+  left: 0px;
+}
+.img-yas {
+  width: 9rem;
+  height: 9rem;
+  top: 33rem;
+  left: 15rem;
+}
+  
 }
 
 
