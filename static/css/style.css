@@ -21,7 +21,7 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  z-index: -1; /* Mantém o fundo atrás de outros elementos */
+  z-index: -1;
   opacity: 0.25;
 }
 
@@ -34,12 +34,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1; /* Mantém o conteúdo acima do fundo */
+  z-index: 1;
 }
 
 .logo {
   position: absolute;
-  top: 5%; /* Ajuste para manter a logo no topo, mas visível */
+  top: 5%;
   width: 10%;
   height: 20%;
   z-index: 1;
@@ -159,9 +159,9 @@ body {
   width: 100%;
   height: 100%;
   background-image: url("imges/template.png");
-  background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
-  background-position: center; /* Centraliza a imagem */
-  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   z-index: -1;
 }
 .cadastrar {
@@ -173,12 +173,12 @@ body {
 }
 .cadastro {
   position: absolute;
-  background: rgba(219, 222, 231, 0.5); /* Fundo branco semi-transparente */
+  background: rgba(219, 222, 231, 0.5);
   padding: 2rem;
   height: 450px;
   width: 330px;
   border-radius: 30px;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5); /* Sombra mais opaca */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
   text-align: center;
   top: 18%;
   left: 40%;
@@ -187,15 +187,15 @@ body {
 .input-cadastro {
   position: relative;
   top: 4rem;
-  margin-top: 1.5rem; /*Espaçamento acima*/
-  margin-bottom: 0rem; /*Espaçamento entre botões*/
+  margin-top: 1.5rem;
+  margin-bottom: 0rem;
   width: 100%;
   padding: 0.8rem;
   height: 3rem;
   border: 1px solid #ccc;
   border-radius: 15px;
   font-size: 1rem;
-  text-align: center; /* Adiciona centralização do texto */
+  text-align: center;
 }
 
 .input-cadastro i {
@@ -223,7 +223,7 @@ body {
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.3s ease;
-  margin-top: 0rem; /*Espaçamento acima*/
+  margin-top: 0rem;
 }
 
 .btnc:hover {
@@ -247,7 +247,7 @@ body {
   font-weight: 700;
   letter-spacing: 1px;
   color: #5b1b1bc9;
-  text-shadow: 1px 1px 2px rgba(133, 128, 128, 0.1); /* leve sombreamento */
+  text-shadow: 1px 1px 2px rgba(133, 128, 128, 0.1);
 }
 
 .home-equipe {
@@ -257,16 +257,16 @@ body {
   width: 100%;
   height: 100%;
   background-image: url("/static/images/template.png");
-  background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
-  background-position: center; /* Centraliza a imagem */
-  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   z-index: -1;
-  opacity: 0.1; /* Define a opacidade de todo o elemento */
+  opacity: 0.1;
 }
 
 .logo-home {
   position: absolute;
-  top: 28px; /*Espaçamento acima*/
+  top: 28px;
   left: -35px;
   width: 10%;
   height: 20%;
@@ -275,22 +275,22 @@ body {
 
 /* Seção principal */
 .home {
-  padding: 10px 10px; /* Reduz o espaçamento superior/inferior */
+  padding: 10px 10px;
   background-color: #fffaf7;
   display: flex;
-  justify-content: center; /* Centraliza horizontalmente */
+  justify-content: center;
 }
 
 .home-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0px; /* Reduz espaço entre os cards */
-  max-width: 1000px; /* Limita largura máxima */
+  gap: 0px;
+  max-width: 1000px;
   width: 100%;
   justify-items: center;
 }
 
-/* Links de serviço */
+
 .home-container a {
   position: relative;
   text-align: center;
@@ -303,7 +303,6 @@ body {
   transform: scale(1.05);
 }
 
-/* Imagens dos serviços */
 .img-home {
   width: 13rem;
   height: 9rem;
@@ -313,20 +312,20 @@ body {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Botões circulares */
+
 .home-container span[class^="btn-"] {
   position: absolute;
   top: 10px;
   right: 15px;
   width: 30px;
   height: 30px;
-  background-color: #c398f5; /* Pode trocar por cor personalizada por serviço */
+  background-color: #c398f5;
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
-/* Texto abaixo das imagens */
+
 .txt-btnpodologia,
 .txt-btnmanicure,
 .txt-btndepilacao,
@@ -373,11 +372,11 @@ body {
   width: 100%;
   height: 100%;
   background-image: url("/static/images/template.png");
-  background-size: cover; /* Redimensiona a imagem para cobrir todo o fundo */
-  background-position: center; /* Centraliza a imagem */
-  background-repeat: no-repeat; /* Impede que a imagem se repita */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   z-index: -1;
-  opacity: 0.1; /* Define a opacidade de todo o elemento */
+  opacity: 0.1;
 }
 .pod {
   position: absolute;
