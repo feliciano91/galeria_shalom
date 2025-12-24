@@ -1,8 +1,8 @@
-import os
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime  # Importando o módulo datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
+import os
+
 
 app = Flask(__name__)
 app.secret_key = "sua_chave_secreta"
