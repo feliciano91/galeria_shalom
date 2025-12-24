@@ -1,18 +1,23 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
-from flask_mysqldb import MySQL
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime  # Importando o módulo datetime
 from datetime import timedelta
-import sqlite3
 
 app = Flask(__name__)
+app.secret_key = "sua_chave_secreta"
 
-# Configurações do MySQL
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'shalon'
+# ===== BANCO POSTGRES (Render) =====
+database_url = os.getenv("DATABASE_URL")
 
-mysql = MySQL(app)
+# Correção obrigatória (Render às vezes usa postgres://)
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
 
 @app.route('/')
 def index():
@@ -816,3 +821,8 @@ def cancelar_agendamento():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+with app.app_context():
+    db.create_all()
