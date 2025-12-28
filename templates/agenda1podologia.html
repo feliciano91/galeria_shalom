@@ -3,92 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendário de Agendamento</title>    
-    <script src="{{ url_for('static', filename='js/scriptp.js') }}"></script>
+    <title>Calendário de Agendamento</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script defer src="{{ url_for('static', filename='js/scriptp.js') }}"></script>
 </head>
+
 <body>
-    <a href="/podologa" class="voltar-am">Voltar</a>
+
+<a href="/podologa" class="voltar-am">Voltar</a>
+
 <form action="{{ url_for('agenda1podologia') }}" method="POST">
-    <a href="/podologa" class="volta-agendaju"></a>
-    <div class="container-agendamento"></div>
-    
-        <input class="oculto" type="text" id="input-servico" name="servico" required>
 
-        <div class="nome-manicure">
-            <label for="nome-manicure">NOME:</label>
-            <input type="text" id="nome" name="nome" placeholder="Inserir seu nome" required>
-        </div>
+    <input type="hidden" id="input-servico" name="servico" required>
 
-        <div class="whatsapp">
-            <label for="whatsapp">WHATSAPP</label>
-            <input type="text" id="contato" name="contato" placeholder="(xx) xxxxx-xxxx" required>
-        </div>
+    <div class="nome-manicure">
+        <label>NOME:</label>
+        <input type="text" name="nome" placeholder="Inserir seu nome" required>
+    </div>
 
-            <div class="Calendario">
-                <header class="cabecalho">
-                    <button class="btn-ant" id="btn_prev">‹</button>
-                    <h2 class="mes" id="mes">Janeiro</h2> <!-- Aqui fica o nome do mês -->
-                    <h2 class="ano" id="ano">2025</h2>    <!-- Aqui ficará o ano -->
-                    <button class="btn-pro" id="btn_next">›</button>
-                </header>
-                <table>
-                    <thead>
-                        <tr class="semana">
-                            <td>Dom</td>
-                            <td>Seg</td>
-                            <td>Ter</td>
-                            <td>Qua</td>
-                            <td>Qui</td>
-                            <td>Sex</td>
-                            <td>Sab</td>
-                        </tr>
-                    </thead>
-                    <tbody id="data" name="data">
-                        <!-- Os dias serão preenchidos dinamicamente pelo JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            <input type="date" id="dataSelecionada" name="data" min="" hidden>
+    <div class="whatsapp">
+        <label>WHATSAPP</label>
+        <input type="text" name="contato" placeholder="(xx) xxxxx-xxxx" required>
+    </div>
 
-            <div class="agenda">
-                <h2>Horários Disponíveis</h2>
-                <table id="horario" name="horario">
-                    <tbody>
-                        <!-- Horários serão inseridos aqui pelo JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-            <input type="time" id="horarioSelecionado" name="horario" hidden>
+    <!-- CALENDÁRIO -->
+    <div class="Calendario">
+        <header class="cabecalho">
+            <button type="button" id="btn_prev">‹</button>
+            <h2 id="mes"></h2>
+            <h2 id="ano"></h2>
+            <button type="button" id="btn_next">›</button>
+        </header>
 
-            <div class="pagamento-container">
-                <h3 class="p-pagamento">Escolha o Método de Pagamento</h3>
-                <div class="pagamento-opcao">
-                    <label>
-                        <input type="radio" id="pagamento" name="pagamento" value="pix" /> PIX
-                    </label>
-                    <label>
-                        <input type="radio" id="pagamento" name="pagamento" value="cartao" /> Cartão
-                    </label>
-                    <label>
-                        <input type="radio" id="pagamento" name="pagamento" value="especie" /> Espécie
-                    </label>
-                </div>
-            </div>
-            <button type="submit" class="agendar" id="btn-agendar" disabled>Agendar</button>
+        <table>
+            <thead>
+                <tr class="semana">
+                    <td>Dom</td>
+                    <td>Seg</td>
+                    <td>Ter</td>
+                    <td>Qua</td>
+                    <td>Qui</td>
+                    <td>Sex</td>
+                    <td>Sab</td>
+                </tr>
+            </thead>
+
+            <!-- ⚠️ ID CORRETO -->
+            <tbody id="datas"></tbody>
+        </table>
+    </div>
+
+    <input type="hidden" id="dataSelecionada" name="data">
+
+    <!-- HORÁRIOS -->
+    <div class="agenda">
+        <h2>Horários Disponíveis</h2>
+        <table>
+            <!-- ⚠️ ID CORRETO -->
+            <tbody id="horarios"></tbody>
+        </table>
+    </div>
+
+    <input type="hidden" id="horarioSelecionado" name="horario">
+
+    <!-- PAGAMENTO -->
+    <div class="pagamento-container">
+        <h3>Escolha o Método de Pagamento</h3>
+
+        <label>
+            <input type="radio" name="pagamento" value="pix"> PIX
+        </label>
+
+        <label>
+            <input type="radio" name="pagamento" value="cartao"> Cartão
+        </label>
+
+        <label>
+            <input type="radio" name="pagamento" value="especie"> Espécie
+        </label>
+    </div>
+
+    <button type="submit" id="btn-agendar" disabled>Agendar</button>
+
 </form>
+
+<!-- SCRIPT PARA PEGAR SERVIÇO DA URL -->
 <script>
-  window.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const servico = urlParams.get('servico');
+window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const servico = params.get('servico');
 
     if (servico) {
-        const inputServico = document.getElementById('input-servico');
-        if (inputServico) {
-        inputServico.value = decodeURIComponent(servico);
-        }
+        document.getElementById('input-servico').value =
+            decodeURIComponent(servico);
     }
-    });
+});
 </script>
+
 </body>
 </html>
