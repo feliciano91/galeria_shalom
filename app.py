@@ -19,6 +19,30 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+class AgendamentoManicure(db.Model):
+    __tablename__ = 'agendamentomanicure'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    contato = db.Column(db.String(50), nullable=False)
+    data = db.Column(db.Date, nullable=False)
+    horario = db.Column(db.String(5), nullable=False)
+    pagamento = db.Column(db.String(50))
+    servico = db.Column(db.String(100))
+
+
+class AgendamentoPodologia(db.Model):
+    __tablename__ = 'agendamentopodologia'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    contato = db.Column(db.String(50), nullable=False)
+    data = db.Column(db.Date, nullable=False)
+    horario = db.Column(db.String(5), nullable=False)
+    pagamento = db.Column(db.String(50))
+    servico = db.Column(db.String(100))
+
+
 @app.route('/')
 def index():
     return render_template('home-page.html')
@@ -106,10 +130,17 @@ def agenda1manicure():
     servico = request.form['servico']
 
     # Inserir no banco de dados
-    cursor = mysql.connection.cursor()
-    query = "INSERT INTO agendamentomanicure (nome, contato, data, horario, pagamento, servico) VALUES (%s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (nome, contato, data, horario, pagamento, servico))
-    mysql.connection.commit()
+    novo = AgendamentoManicure(
+        nome=nome,
+        contato=contato,
+        data=datetime.strptime(data, '%Y-%m-%d'),
+        horario=horario,
+        pagamento=pagamento,
+        servico=servico
+    )
+    
+    db.session.add(novo)
+    db.session.commit()
 
     # Converter a string da data para um objeto datetime
     data_obj = datetime.strptime(data, '%Y-%m-%d')
@@ -128,41 +159,52 @@ def agenda2manicure():
     pagamento = request.form['pagamento']
     servico = request.form['servico']
 
-    # Criação de uma lista com os 2 horários
+    # Converter data para DATE
+    data_obj = datetime.strptime(data, '%Y-%m-%d').date()
+
+    # Criar os 2 horários
     horarios = []
     hora, minuto = map(int, horario.split(':'))
 
-    # Adiciona o horário selecionado
     horarios.append(f"{hora:02d}:{minuto:02d}")
-    
-    # Adiciona o próximo horário (+30min)
+
     minuto += 30
     if minuto >= 60:
         minuto -= 60
         hora += 1
     horarios.append(f"{hora:02d}:{minuto:02d}")
 
-    # Verificar se os horários já estão ocupados no banco de dados
-    cursor = mysql.connection.cursor()
-    query = "SELECT COUNT(*) FROM agendamentomanicure WHERE data = %s AND horario IN (%s, %s)"
-    cursor.execute(query, (data, horarios[0], horarios[1]))  
-    result = cursor.fetchone()
+    # 🔎 VERIFICAR SE ALGUM DOS HORÁRIOS JÁ EXISTE
+    existe = AgendamentoManicure.query.filter(
+        AgendamentoManicure.data == data_obj,
+        AgendamentoManicure.horario.in_(horarios)
+    ).first()
 
-    if result[0] > 0:
+    if existe:
         return render_template('escolhernovohorario.html')
 
-    # Inserir os horários no banco de dados, caso estejam livres
+    # 💾 INSERIR OS HORÁRIOS
     for h in horarios:
-        query = "INSERT INTO agendamentomanicure (nome, contato, data, horario, pagamento, servico) VALUES (%s, %s, %s, %s, %s, %s)"
+        novo = AgendamentoManicure(
+            nome=nome,
+            contato=contato,
+            data=data_obj,
+            horario=h,
+            pagamento=pagamento,
+            servico=servico
+        )
+        db.session.add(novo)
 
-        cursor.execute(query, (nome, contato, data, h, pagamento, servico))
-    mysql.connection.commit()
+    db.session.commit()
 
-    # Converter a string da data para um objeto datetime
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
     data_formatada = data_obj.strftime('%d-%m-%Y')
 
-    return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
+    return render_template(
+        'confirmacao.html',
+        data=data_formatada,
+        horario=horario,
+        pagamento=pagamento
+    )
 
 
 @app.route('/agenda3manicure', methods=['POST'])
@@ -174,46 +216,50 @@ def agenda3manicure():
     pagamento = request.form['pagamento']
     servico = request.form['servico']
 
-    # Criação de uma lista com os 3 horários
+    data_obj = datetime.strptime(data, '%Y-%m-%d').date()
+
+    # Criar os 3 horários
     horarios = []
     hora, minuto = map(int, horario.split(':'))
 
-    # Adiciona o horário selecionado
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-    
-    # Adiciona o próximo horário (+30min)
-    minuto += 30
-    if minuto >= 60:  
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    for _ in range(3):
+        horarios.append(f"{hora:02d}:{minuto:02d}")
+        minuto += 30
+        if minuto >= 60:
+            minuto -= 60
+            hora += 1
 
-    # Adiciona o próximo horário (+60min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    # 🔎 Verificar se algum horário já existe
+    existe = AgendamentoManicure.query.filter(
+        AgendamentoManicure.data == data_obj,
+        AgendamentoManicure.horario.in_(horarios)
+    ).first()
 
-    # Verificar se os horários já estão ocupados no banco de dados
-    cursor = mysql.connection.cursor()
-    query = "SELECT COUNT(*) FROM agendamentomanicure WHERE data = %s AND horario IN (%s, %s, %s)"
-    cursor.execute(query, (data, horarios[0], horarios[1], horarios[2]))  
-    result = cursor.fetchone()
-
-    if result[0] > 0:
+    if existe:
         return render_template('escolhernovohorario.html')
 
-    # Inserir os horários no banco de dados, caso estejam livres
+    # 💾 Inserir os horários
     for h in horarios:
-        query = "INSERT INTO agendamentomanicure (nome, contato, data, horario, pagamento, servico) VALUES (%s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (nome, contato, data, h, pagamento, servico))
-    mysql.connection.commit()
+        novo = AgendamentoManicure(
+            nome=nome,
+            contato=contato,
+            data=data_obj,
+            horario=h,
+            pagamento=pagamento,
+            servico=servico
+        )
+        db.session.add(novo)
 
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
+    db.session.commit()
+
     data_formatada = data_obj.strftime('%d-%m-%Y')
 
-    return render_template('confirmacao.html', data=data_formatada, horarios=horarios, pagamento=pagamento)
+    return render_template(
+        'confirmacao.html',
+        data=data_formatada,
+        horarios=horarios,
+        pagamento=pagamento
+    )
 
 
 @app.route('/agenda4manicure', methods=['POST'])
@@ -225,158 +271,102 @@ def agenda4manicure():
     pagamento = request.form['pagamento']
     servico = request.form['servico']
 
-    # Criação de uma lista com os 4 horários
+    data_obj = datetime.strptime(data, '%Y-%m-%d').date()
+
+    # Criar os 4 horários
     horarios = []
     hora, minuto = map(int, horario.split(':'))
 
-    # Adiciona o horário selecionado
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-    
-    # Adiciona o próximo horário (+30min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    for _ in range(4):
+        horarios.append(f"{hora:02d}:{minuto:02d}")
+        minuto += 30
+        if minuto >= 60:
+            minuto -= 60
+            hora += 1
 
-    # Adiciona o próximo horário (+60min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    # 🔎 Verificar se algum horário já existe
+    existe = AgendamentoManicure.query.filter(
+        AgendamentoManicure.data == data_obj,
+        AgendamentoManicure.horario.in_(horarios)
+    ).first()
 
-    # Adiciona o próximo horário (+90min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Verificar se os horários já estão ocupados no banco de dados
-    cursor = mysql.connection.cursor()
-    query = "SELECT COUNT(*) FROM agendamentomanicure WHERE data = %s AND horario IN (%s, %s, %s, %s)"
-    cursor.execute(query, (data, horarios[0], horarios[1], horarios[2], horarios[3]))  
-    result = cursor.fetchone()
-
-    if result[0] > 0:
+    if existe:
         return render_template('escolhernovohorario.html')
 
-    # Inserir os horários no banco de dados, caso estejam livres
+    # 💾 Inserir os horários
     for h in horarios:
-        query = "INSERT INTO agendamentomanicure (nome, contato, data, horario, pagamento, servico) VALUES (%s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (nome, contato, data, h, pagamento, servico))
-    mysql.connection.commit()
+        novo = AgendamentoManicure(
+            nome=nome,
+            contato=contato,
+            data=data_obj,
+            horario=h,
+            pagamento=pagamento,
+            servico=servico
+        )
+        db.session.add(novo)
 
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
+    db.session.commit()
+
     data_formatada = data_obj.strftime('%d-%m-%Y')
 
-    return render_template('confirmacao.html', data=data_formatada, horarios=horarios, pagamento=pagamento)
+    return render_template(
+        'confirmacao.html',
+        data=data_formatada,
+        horarios=horarios,
+        pagamento=pagamento
+    )
 
 
 @app.route('/agenda5manicure', methods=['POST'])
 def agenda5manicure():
     nome = request.form['nome']
     contato = request.form['contato']
-    data = request.form['data']
+    data = datetime.strptime(request.form['data'], '%Y-%m-%d').date()
     horario = request.form['horario']
     pagamento = request.form['pagamento']
     servico = request.form['servico']
 
-    # Criação de uma lista com os 4 horários
+    # 🔹 Gerar 10 horários (5 horas = 10 blocos de 30min)
     horarios = []
     hora, minuto = map(int, horario.split(':'))
 
-    # Adiciona o horário selecionado
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-    
-    # Adiciona o próximo horário (+30min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    for _ in range(10):
+        horarios.append(f"{hora:02d}:{minuto:02d}")
+        minuto += 30
+        if minuto >= 60:
+            minuto -= 60
+            hora += 1
 
-    # Adiciona o próximo horário (+60min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    # 🔍 Verificar conflito
+    conflito = db.session.query(AgendamentoManicure).filter(
+        AgendamentoManicure.data == data,
+        AgendamentoManicure.horario.in_(horarios)
+    ).count()
 
-    # Adiciona o próximo horário (+90min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+120min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+150min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+180min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+210min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+240min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+270min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-
-    # Verificar se os horários já estão ocupados no banco de dados
-    cursor = mysql.connection.cursor()
-    query = "SELECT COUNT(*) FROM agendamentomanicure WHERE data = %s AND horario IN (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (data, horarios[0], horarios[1], horarios[2], horarios[3],horarios[4], horarios[5], horarios[6], horarios[7], horarios[8], horarios[9]))  
-    result = cursor.fetchone()
-
-    if result[0] > 0:
+    if conflito > 0:
         return render_template('escolhernovohorario.html')
 
-    # Inserir os horários no banco de dados, caso estejam livres
+    # 💾 Inserir no banco
     for h in horarios:
-        query = "INSERT INTO agendamentomanicure (nome, contato, data, horario, pagamento, servico) VALUES (%s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (nome, contato, data, h, pagamento, servico))
-    mysql.connection.commit()
+        agendamento = AgendamentoManicure(
+            nome=nome,
+            contato=contato,
+            data=data,
+            horario=h,
+            pagamento=pagamento,
+            servico=servico
+        )
+        db.session.add(agendamento)
 
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
-    data_formatada = data_obj.strftime('%d-%m-%Y')
+    db.session.commit()
 
-    return render_template('confirmacao.html', data=data_formatada, horarios=horarios, pagamento=pagamento)
-
-
-
-
+    data_formatada = data.strftime('%d-%m-%Y')
+    return render_template(
+        'confirmacao.html',
+        data=data_formatada,
+        horarios=horarios,
+        pagamento=pagamento
+    )
 
 
 
@@ -411,282 +401,240 @@ def p5agendamento():
 #============================ AGENDAMENTO PARA PODOLOGIA ==================================================
 @app.route('/agenda1podologia', methods=['POST'])
 def agenda1podologia():
-    # Pegando os dados do formulário
     nome = request.form['nome']
     contato = request.form['contato']
-    data = request.form['data']
+    data = datetime.strptime(request.form['data'], '%Y-%m-%d').date()
     horario = request.form['horario']
     pagamento = request.form['pagamento']
     servico = request.form['servico']
 
+    agendamento = AgendamentoPodologia(
+        nome=nome,
+        contato=contato,
+        data=data,
+        horario=horario,
+        pagamento=pagamento,
+        servico=servico
+    )
 
-    # Inserir no banco de dados
-    cursor = mysql.connection.cursor()
-    query = "INSERT INTO agendamentopodologia (nome, contato, data, horario, pagamento, servico) VALUES (%s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (nome, contato, data, horario, pagamento, servico))
-    mysql.connection.commit()
+    db.session.add(agendamento)
+    db.session.commit()
 
-    # Converter a string da data para um objeto datetime
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
-    data_formatada = data_obj.strftime('%d-%m-%Y')
-
-    # Processando os dados e retornando a confirmação
-    return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
+    data_formatada = data.strftime('%d-%m-%Y')
+    return render_template(
+        'confirmacao.html',
+        data=data_formatada,
+        horario=horario,
+        pagamento=pagamento
+    )
 
 
 @app.route('/agenda2podologia', methods=['POST'])
 def agenda2podologia():
     nome = request.form['nome']
     contato = request.form['contato']
-    data = request.form['data']
+    data = datetime.strptime(request.form['data'], '%Y-%m-%d').date()
     horario = request.form['horario']
     pagamento = request.form['pagamento']
     servico = request.form['servico']
 
-    # Criação de uma lista com os 2 horários
+    # 🔹 Gerar os 2 horários
     horarios = []
     hora, minuto = map(int, horario.split(':'))
 
-    # Adiciona o horário selecionado
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-    
-    # Adiciona o próximo horário (+30min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    for _ in range(2):
+        horarios.append(f"{hora:02d}:{minuto:02d}")
+        minuto += 30
+        if minuto >= 60:
+            minuto -= 60
+            hora += 1
 
-    # Verificar se os horários já estão ocupados no banco de dados
-    cursor = mysql.connection.cursor()
-    query = "SELECT COUNT(*) FROM agendamentopodologia WHERE data = %s AND horario IN (%s, %s)"
-    cursor.execute(query, (data, horarios[0], horarios[1]))  
-    result = cursor.fetchone()
+    # 🔍 Verificar conflito
+    conflito = db.session.query(AgendamentoPodologia).filter(
+        AgendamentoPodologia.data == data,
+        AgendamentoPodologia.horario.in_(horarios)
+    ).count()
 
-    if result[0] > 0:
+    if conflito > 0:
         return render_template('escolhernovohorario.html')
 
-    # Inserir os horários no banco de dados, caso estejam livres
+    # 💾 Inserir horários
     for h in horarios:
-        query = "INSERT INTO agendamentopodologia (nome, contato, data, horario, pagamento, servico) VALUES (%s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (nome, contato, data, h, pagamento, servico))
-    mysql.connection.commit()
+        agendamento = AgendamentoPodologia(
+            nome=nome,
+            contato=contato,
+            data=data,
+            horario=h,
+            pagamento=pagamento,
+            servico=servico
+        )
+        db.session.add(agendamento)
 
-    # Converter a string da data para um objeto datetime
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
-    data_formatada = data_obj.strftime('%d-%m-%Y')
+    db.session.commit()
 
-    return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
+    data_formatada = data.strftime('%d-%m-%Y')
+    return render_template(
+        'confirmacao.html',
+        data=data_formatada,
+        horario=horario,
+        pagamento=pagamento
+    )
 
 
 @app.route('/agenda3podologia', methods=['POST'])
 def agenda3podologia():
     nome = request.form['nome']
     contato = request.form['contato']
-    data = request.form['data']
+    data = datetime.strptime(request.form['data'], '%Y-%m-%d').date()
     horario = request.form['horario']
     pagamento = request.form['pagamento']
     servico = request.form['servico']
 
-    # Criação de uma lista com os 3 horários
+    # 🔹 Gerar 3 horários (30min)
     horarios = []
     hora, minuto = map(int, horario.split(':'))
 
-    # Adiciona o horário selecionado
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-    
-    # Adiciona o próximo horário (+30min)
-    minuto += 30
-    if minuto >= 60:  
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    for _ in range(3):
+        horarios.append(f"{hora:02d}:{minuto:02d}")
+        minuto += 30
+        if minuto >= 60:
+            minuto -= 60
+            hora += 1
 
-    # Adiciona o próximo horário (+60min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    # 🔍 Verificar conflito
+    conflito = db.session.query(AgendamentoPodologia).filter(
+        AgendamentoPodologia.data == data,
+        AgendamentoPodologia.horario.in_(horarios)
+    ).count()
 
-    # Verificar se os horários já estão ocupados no banco de dados
-    cursor = mysql.connection.cursor()
-    query = "SELECT COUNT(*) FROM agendamentopodologia WHERE data = %s AND horario IN (%s, %s, %s)"
-    cursor.execute(query, (data, horarios[0], horarios[1], horarios[2]))  
-    result = cursor.fetchone()
-
-    if result[0] > 0:
+    if conflito > 0:
         return render_template('escolhernovohorario.html')
 
-    # Inserir os horários no banco de dados, caso estejam livres
+    # 💾 Inserir horários
     for h in horarios:
-        query = "INSERT INTO agendamentopodologia (nome, contato, data, horario, pagamento, servico) VALUES (%s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (nome, contato, data, h, pagamento, servico))
-    mysql.connection.commit()
+        agendamento = AgendamentoPodologia(
+            nome=nome,
+            contato=contato,
+            data=data,
+            horario=h,
+            pagamento=pagamento,
+            servico=servico
+        )
+        db.session.add(agendamento)
 
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
-    data_formatada = data_obj.strftime('%d-%m-%Y')
+    db.session.commit()
 
-    return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
+    data_formatada = data.strftime('%d-%m-%Y')
+    return render_template(
+        'confirmacao.html',
+        data=data_formatada,
+        horario=horario,
+        pagamento=pagamento
+    )
 
 
 @app.route('/agenda4podologia', methods=['POST'])
 def agenda4podologia():
     nome = request.form['nome']
     contato = request.form['contato']
-    data = request.form['data']
+    data = datetime.strptime(request.form['data'], '%Y-%m-%d').date()
     horario = request.form['horario']
     pagamento = request.form['pagamento']
     servico = request.form['servico']
 
-    # Criação de uma lista com os 4 horários
+    # 🔹 Gerar 4 horários (30min)
     horarios = []
     hora, minuto = map(int, horario.split(':'))
 
-    # Adiciona o horário selecionado
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-    
-    # Adiciona o próximo horário (+30min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    for _ in range(4):
+        horarios.append(f"{hora:02d}:{minuto:02d}")
+        minuto += 30
+        if minuto >= 60:
+            minuto -= 60
+            hora += 1
 
-    # Adiciona o próximo horário (+60min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    # 🔍 Verificar conflito
+    conflito = db.session.query(AgendamentoPodologia).filter(
+        AgendamentoPodologia.data == data,
+        AgendamentoPodologia.horario.in_(horarios)
+    ).count()
 
-    # Adiciona o próximo horário (+90min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Verificar se os horários já estão ocupados no banco de dados
-    cursor = mysql.connection.cursor()
-    query = "SELECT COUNT(*) FROM agendamentopodologia WHERE data = %s AND horario IN (%s, %s, %s, %s)"
-    cursor.execute(query, (data, horarios[0], horarios[1], horarios[2], horarios[3]))  
-    result = cursor.fetchone()
-
-    if result[0] > 0:
+    if conflito > 0:
         return render_template('escolhernovohorario.html')
 
-    # Inserir os horários no banco de dados, caso estejam livres
+    # 💾 Inserir horários
     for h in horarios:
-        query = "INSERT INTO agendamentopodologia (nome, contato, data, horario, pagamento, servico) VALUES (%s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (nome, contato, data, h, pagamento, servico))
-    mysql.connection.commit()
+        agendamento = AgendamentoPodologia(
+            nome=nome,
+            contato=contato,
+            data=data,
+            horario=h,
+            pagamento=pagamento,
+            servico=servico
+        )
+        db.session.add(agendamento)
 
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
-    data_formatada = data_obj.strftime('%d-%m-%Y')
+    db.session.commit()
 
-    return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
+    data_formatada = data.strftime('%d-%m-%Y')
+    return render_template(
+        'confirmacao.html',
+        data=data_formatada,
+        horario=horario,
+        pagamento=pagamento
+    )
 
 
 @app.route('/agenda5podologia', methods=['POST'])
 def agenda5podologia():
     nome = request.form['nome']
     contato = request.form['contato']
-    data = request.form['data']
+    data = datetime.strptime(request.form['data'], '%Y-%m-%d').date()
     horario = request.form['horario']
     pagamento = request.form['pagamento']
     servico = request.form['servico']
 
-    # Criação de uma lista com os 4 horários
+    # 🔹 Gerar 10 horários (5 blocos de 30min)
     horarios = []
     hora, minuto = map(int, horario.split(':'))
 
-    # Adiciona o horário selecionado
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-    
-    # Adiciona o próximo horário (+30min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    for _ in range(10):
+        horarios.append(f"{hora:02d}:{minuto:02d}")
+        minuto += 30
+        if minuto >= 60:
+            minuto -= 60
+            hora += 1
 
-    # Adiciona o próximo horário (+60min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
+    # 🔍 Verificar conflito de horário
+    conflito = db.session.query(AgendamentoPodologia).filter(
+        AgendamentoPodologia.data == data,
+        AgendamentoPodologia.horario.in_(horarios)
+    ).count()
 
-    # Adiciona o próximo horário (+90min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+120min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+150min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+180min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+210min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+240min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-    # Adiciona o próximo horário (+270min)
-    minuto += 30
-    if minuto >= 60:
-        minuto -= 60
-        hora += 1
-    horarios.append(f"{hora:02d}:{minuto:02d}")
-
-
-    # Verificar se os horários já estão ocupados no banco de dados
-    cursor = mysql.connection.cursor()
-    query = "SELECT COUNT(*) FROM agendamentopodologia WHERE data = %s AND horario IN (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (data, horarios[0], horarios[1], horarios[2], horarios[3],horarios[4], horarios[5], horarios[6], horarios[7], horarios[8], horarios[9]))  
-    result = cursor.fetchone()
-
-    if result[0] > 0:
+    if conflito > 0:
         return render_template('escolhernovohorario.html')
 
-    # Inserir os horários no banco de dados, caso estejam livres
+    # 💾 Inserir horários
     for h in horarios:
-        query = "INSERT INTO agendamentopodologia (nome, contato, data, horario, pagamento, servico) VALUES (%s, %s, %s, %s, %s, %s)"
-        cursor.execute(query, (nome, contato, data, h, pagamento, servico))
-    mysql.connection.commit()
+        agendamento = AgendamentoPodologia(
+            nome=nome,
+            contato=contato,
+            data=data,
+            horario=h,
+            pagamento=pagamento,
+            servico=servico
+        )
+        db.session.add(agendamento)
 
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
-    data_formatada = data_obj.strftime('%d-%m-%Y')
+    db.session.commit()
 
-    return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
+    data_formatada = data.strftime('%d-%m-%Y')
+    return render_template(
+        'confirmacao.html',
+        data=data_formatada,
+        horario=horario,
+        pagamento=pagamento
+    )
 
 
 
@@ -698,47 +646,21 @@ def agendado():
 
 @app.route('/get_horarios/<data>')
 def get_horarios(data):
-    # Conectar ao banco de dados
-    cursor = mysql.connection.cursor()
+    data_obj = datetime.strptime(data, '%Y-%m-%d').date()
 
-    # Consulta agora traz os dados desejados
-    query = """
-        SELECT nome, contato, horario, pagamento, servico
-        FROM agendamentomanicure
-        WHERE data = %s
-    """
-    cursor.execute(query, (data,))
-    agendamentos = cursor.fetchall()
+    agendamentos = AgendamentoManicure.query.filter_by(data=data_obj).all()
 
-    lista_agendamentos = []
-    
-    for agendamento in agendamentos:
-        nome = agendamento[0]
-        contato = agendamento[1]
-        horario = agendamento[2]
-        pagamento = agendamento[3]
-        servico = agendamento[4]
-
-        # Formata o horário
-        if isinstance(horario, timedelta):
-            horas = horario.seconds // 3600
-            minutos = (horario.seconds % 3600) // 60
-            horario_formatado = f"{horas:02}:{minutos:02}"
-        else:
-            horario_formatado = horario.strftime('%H:%M')
-
-        # Adiciona ao resultado final
-        lista_agendamentos.append({
-            "nome": nome,
-            "contato": contato,
-            "horario": horario_formatado,
-            "pagamento": pagamento,
-            "servico": servico
+    lista = []
+    for a in agendamentos:
+        lista.append({
+            "nome": a.nome,
+            "contato": a.contato,
+            "horario": a.horario,
+            "pagamento": a.pagamento,
+            "servico": a.servico
         })
 
-    cursor.close()  # Fecha o cursor
-
-    return jsonify(lista_agendamentos)  # Retorna todos os dados em JSON
+    return jsonify(lista)
 
 #---------------------------------------------------------------------------------------------------------------
 @app.route('/agendadopodologia')
@@ -747,47 +669,21 @@ def agendadopodologia():
 
 @app.route('/get_horariop/<data>')
 def get_horariop(data):
-    # Conectar ao banco de dados
-    cursor = mysql.connection.cursor()
+    data_obj = datetime.strptime(data, '%Y-%m-%d').date()
 
-    # Consulta agora traz os dados desejados
-    query = """
-        SELECT nome, contato, horario, pagamento, servico
-        FROM agendamentopodologia
-        WHERE data = %s
-    """
-    cursor.execute(query, (data,))
+    agendamentos = AgendamentoPodologia.query.filter_by(data=data_obj).all()
 
-    agendamentos = cursor.fetchall()
-
-    lista_agendamentos = []
-    for agendamento in agendamentos:
-        nome = agendamento[0]
-        contato = agendamento[1]
-        horario = agendamento[2]
-        pagamento = agendamento[3]
-        servico = agendamento[4]
-
-        # Formata o horário
-        if isinstance(horario, timedelta):
-            horas = horario.seconds // 3600
-            minutos = (horario.seconds % 3600) // 60
-            horario_formatado = f"{horas:02}:{minutos:02}"
-        else:
-            horario_formatado = horario.strftime('%H:%M')
-
-        # Adiciona ao resultado final
-        lista_agendamentos.append({
-            "nome": nome,
-            "contato": contato,
-            "horario": horario_formatado,
-            "pagamento": pagamento,
-            "servico": servico
+    lista = []
+    for a in agendamentos:
+        lista.append({
+            "nome": a.nome,
+            "contato": a.contato,
+            "horario": a.horario,
+            "pagamento": a.pagamento,
+            "servico": a.servico
         })
 
-    cursor.close()  # Fecha o cursor
-
-    return jsonify(lista_agendamentos)  # Retorna todos os dados em JSON
+    return jsonify(lista)
 
 
 #--------------------------------------- CANCELAR AGENDAMENTO---------------------------------------------------------------------
@@ -798,34 +694,24 @@ def confirma_cancelamento():
 
 @app.route('/cancelar_agendamento', methods=['POST'])
 def cancelar_agendamento():
-    data = request.form['data']
+    data = datetime.strptime(request.form['data'], '%Y-%m-%d').date()
     contato = request.form['contato']
 
-    cursor = mysql.connection.cursor()
-    query = """
-        DELETE FROM agendamentopodologia
-        WHERE data = %s AND contato = %s
-    """
-    cursor.execute(query, (data, contato))
-    mysql.connection.commit()
-    cursor.close()
+    AgendamentoPodologia.query.filter_by(
+        data=data,
+        contato=contato
+    ).delete()
+
+    db.session.commit()
 
     flash("Agendamento cancelado com sucesso!", "success")
     return redirect(url_for('confirma_cancelamento'))
-
-
-
 #==========================================================================================================================
 #==========================================================================================================================
-
-with app.app_context():
-    db.create_all()
 
 if __name__ == '__main__':
+    if os.getenv("FLASK_ENV") == "development":
+        with app.app_context():
+            db.create_all()
+
     app.run(debug=True)
-
-
-
-
-with app.app_context():
-    db.create_all()
