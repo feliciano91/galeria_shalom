@@ -15,70 +15,117 @@ document.addEventListener('DOMContentLoaded', function () {
     let horarioSelecionado = false;
     let pagamentoSelecionado = false;
 
+
+
+    
     //-----------------------------------------------------
-    function atualizarCalendario() {
+    document.addEventListener("DOMContentLoaded", () => {
+
+      const mesElement = document.getElementById("mes");
+      const anoElement = document.getElementById("ano");
+      const diasElement = document.getElementById("data");
+      const inputData = document.getElementById("dataSelecionada");
+    
+      if (!mesElement || !anoElement || !diasElement) {
+        console.error("Erro: elementos do calendário não encontrados");
+        return;
+      }
+    
+      let dataAtual = new Date();
+      let dataSelecionada = null;
+    
+      function selecionarDia(dia) {
+        dataSelecionada = new Date(
+          dataAtual.getFullYear(),
+          dataAtual.getMonth(),
+          dia
+        );
+    
+        inputData.value = dataSelecionada.toISOString().split("T")[0];
+        atualizarCalendario();
+      }
+    
+      function atualizarCalendario() {
         const mesAtual = dataAtual.getMonth();
         const anoAtual = dataAtual.getFullYear();
     
-        mesElement.innerText = dataAtual.toLocaleString('pt-BR', { month: 'long' });
+        mesElement.innerText = dataAtual.toLocaleString("pt-BR", { month: "long" });
         anoElement.innerText = anoAtual;
     
-        const primeiroDia = new Date(anoAtual, mesAtual, 1);
-        const ultimoDia = new Date(anoAtual, mesAtual + 1, 0);
-        const diasNoMes = ultimoDia.getDate();
-        const diaDaSemana = primeiroDia.getDay();
+        const primeiroDia = new Date(anoAtual, mesAtual, 1).getDay();
+        const diasNoMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
     
-        diasElement.innerHTML = '';
+        diasElement.innerHTML = "";
     
-        let tr = document.createElement('tr');
-        for (let i = 0; i < diaDaSemana; i++) {
-            tr.appendChild(document.createElement('td'));
+        let tr = document.createElement("tr");
+    
+        for (let i = 0; i < primeiroDia; i++) {
+          tr.appendChild(document.createElement("td"));
         }
     
         const hoje = new Date();
-        // Ajustando 'hoje' para remover a hora, minuto e segundo
-        hoje.setHours(0, 0, 0, 0); // Zera a hora, minuto, segundo e milissegundo
+        hoje.setHours(0, 0, 0, 0);
     
-        for (let i = 1; i <= diasNoMes; i++) {
-            const diaElement = document.createElement('td');
-            diaElement.innerText = i;
-            diaElement.classList.add('dia');
+        for (let dia = 1; dia <= diasNoMes; dia++) {
+          const td = document.createElement("td");
+          td.innerText = dia;
+          td.classList.add("dia");
     
-            const dataDia = new Date(anoAtual, mesAtual, i);
-            // Ajustando a data para comparar apenas o dia, mês e ano
-            dataDia.setHours(0, 0, 0, 0); // Zera a hora, minuto, segundo e milissegundo
+          const dataDia = new Date(anoAtual, mesAtual, dia);
+          dataDia.setHours(0, 0, 0, 0);
     
-            // Verifica se a data é anterior à data atual
-            if (dataDia < hoje) {
-                diaElement.classList.add('past-date');
-                diaElement.style.cursor = 'not-allowed'; // Desabilita o clique nas datas passadas
-            } else {
-                // Se a data for hoje ou no futuro, permite selecionar
-                diaElement.addEventListener('click', () => selecionarDia(i));
-            }
+          if (dataDia < hoje) {
+            td.classList.add("past-date");
+          } else {
+            td.addEventListener("click", () => selecionarDia(dia));
+          }
     
-            // Destaca o dia de hoje
-            if (hoje.getDate() === i && hoje.getMonth() === mesAtual && hoje.getFullYear() === anoAtual) {
-                diaElement.classList.add('hoje');
-            }
+          if (
+            hoje.getDate() === dia &&
+            hoje.getMonth() === mesAtual &&
+            hoje.getFullYear() === anoAtual
+          ) {
+            td.classList.add("hoje");
+          }
     
-            // Destaca o dia selecionado
-            if (dataSelecionada && dataSelecionada.getDate() === i && dataSelecionada.getMonth() === mesAtual && dataSelecionada.getFullYear() === anoAtual) {
-                diaElement.classList.add('selecionado');
-            }
+          if (
+            dataSelecionada &&
+            dataSelecionada.getDate() === dia &&
+            dataSelecionada.getMonth() === mesAtual &&
+            dataSelecionada.getFullYear() === anoAtual
+          ) {
+            td.classList.add("selecionado");
+          }
     
-            tr.appendChild(diaElement);
+          tr.appendChild(td);
     
-            if (tr.children.length === 7) {
-                diasElement.appendChild(tr);
-                tr = document.createElement('tr');
-            }
+          if (tr.children.length === 7) {
+            diasElement.appendChild(tr);
+            tr = document.createElement("tr");
+          }
         }
     
         if (tr.children.length > 0) {
-            diasElement.appendChild(tr);
+          diasElement.appendChild(tr);
         }
-    }
+      }
+    
+      document.getElementById("btn_prev").addEventListener("click", () => {
+        dataAtual.setMonth(dataAtual.getMonth() - 1);
+        atualizarCalendario();
+      });
+    
+      document.getElementById("btn_next").addEventListener("click", () => {
+        dataAtual.setMonth(dataAtual.getMonth() + 1);
+        atualizarCalendario();
+      });
+    
+      atualizarCalendario();
+    });
+
+
+
+
     
     // Função para selecionar o dia
     function selecionarDia(dia) {
