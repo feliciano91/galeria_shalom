@@ -1,16 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
-
     const btnPrev = document.getElementById('btn_prev');
     const btnNext = document.getElementById('btn_next');
     const mesElement = document.getElementById('mes');
     const anoElement = document.getElementById('ano');
-
-    const diasElement = document.getElementById('datas'); // TBODY do calendário
-    const horariosElement = document.getElementById('horarios'); // TBODY horários
-
+    const diasElement = document.getElementById('data');
+    const horarioElement = document.getElementById('horario');
     const btnAgendar = document.getElementById('btn-agendar');
     const radiosPagamento = document.querySelectorAll('input[name="pagamento"]');
-
     const inputData = document.getElementById('dataSelecionada');
     const inputHorario = document.getElementById('horarioSelecionado');
 
@@ -19,162 +15,213 @@ document.addEventListener('DOMContentLoaded', function () {
     let horarioSelecionado = false;
     let pagamentoSelecionado = false;
 
-    /* ================= CALENDÁRIO ================= */
-
+    //-----------------------------------------------------
     function atualizarCalendario() {
         const mesAtual = dataAtual.getMonth();
         const anoAtual = dataAtual.getFullYear();
-
+    
         mesElement.innerText = dataAtual.toLocaleString('pt-BR', { month: 'long' });
         anoElement.innerText = anoAtual;
-
-        const primeiroDia = new Date(anoAtual, mesAtual, 1).getDay();
-        const diasNoMes = new Date(anoAtual, mesAtual + 1, 0).getDate();
-
+    
+        const primeiroDia = new Date(anoAtual, mesAtual, 1);
+        const ultimoDia = new Date(anoAtual, mesAtual + 1, 0);
+        const diasNoMes = ultimoDia.getDate();
+        const diaDaSemana = primeiroDia.getDay();
+    
         diasElement.innerHTML = '';
-
+    
         let tr = document.createElement('tr');
-
-        for (let i = 0; i < primeiroDia; i++) {
+        for (let i = 0; i < diaDaSemana; i++) {
             tr.appendChild(document.createElement('td'));
         }
-
+    
         const hoje = new Date();
-        hoje.setHours(0, 0, 0, 0);
-
-        for (let dia = 1; dia <= diasNoMes; dia++) {
-            const td = document.createElement('td');
-            td.innerText = dia;
-            td.classList.add('dia');
-
-            const dataDia = new Date(anoAtual, mesAtual, dia);
-            dataDia.setHours(0, 0, 0, 0);
-
+        // Ajustando 'hoje' para remover a hora, minuto e segundo
+        hoje.setHours(0, 0, 0, 0); // Zera a hora, minuto, segundo e milissegundo
+    
+        for (let i = 1; i <= diasNoMes; i++) {
+            const diaElement = document.createElement('td');
+            diaElement.innerText = i;
+            diaElement.classList.add('dia');
+    
+            const dataDia = new Date(anoAtual, mesAtual, i);
+            // Ajustando a data para comparar apenas o dia, mês e ano
+            dataDia.setHours(0, 0, 0, 0); // Zera a hora, minuto, segundo e milissegundo
+    
+            // Verifica se a data é anterior à data atual
             if (dataDia < hoje) {
-                td.classList.add('past-date');
+                diaElement.classList.add('past-date');
+                diaElement.style.cursor = 'not-allowed'; // Desabilita o clique nas datas passadas
             } else {
-                td.addEventListener('click', () => selecionarDia(dia));
+                // Se a data for hoje ou no futuro, permite selecionar
+                diaElement.addEventListener('click', () => selecionarDia(i));
             }
-
-            if (
-                dataSelecionada &&
-                dataSelecionada.getDate() === dia &&
-                dataSelecionada.getMonth() === mesAtual &&
-                dataSelecionada.getFullYear() === anoAtual
-            ) {
-                td.classList.add('selecionado');
+    
+            // Destaca o dia de hoje
+            if (hoje.getDate() === i && hoje.getMonth() === mesAtual && hoje.getFullYear() === anoAtual) {
+                diaElement.classList.add('hoje');
             }
-
-            tr.appendChild(td);
-
+    
+            // Destaca o dia selecionado
+            if (dataSelecionada && dataSelecionada.getDate() === i && dataSelecionada.getMonth() === mesAtual && dataSelecionada.getFullYear() === anoAtual) {
+                diaElement.classList.add('selecionado');
+            }
+    
+            tr.appendChild(diaElement);
+    
             if (tr.children.length === 7) {
                 diasElement.appendChild(tr);
                 tr = document.createElement('tr');
             }
         }
-
-        if (tr.children.length) {
+    
+        if (tr.children.length > 0) {
             diasElement.appendChild(tr);
         }
     }
-
+    
+    // Função para selecionar o dia
     function selecionarDia(dia) {
         dataSelecionada = new Date(dataAtual.getFullYear(), dataAtual.getMonth(), dia);
-        inputData.value = dataSelecionada.toISOString().split('T')[0];
-
+        inputData.value = dataSelecionada.toISOString().split('T')[0]; // Preenche o campo de data invisível
         horarioSelecionado = false;
-        inputHorario.value = '';
-
         atualizarCalendario();
-        preencherHorarios();
+        preencherHorarios();  // Preenche os horários após a seleção de data
         verificarFormulario();
     }
+//==================================================
 
-    /* ================= HORÁRIOS ================= */
+    // Função para preencher os horários
+    function preencherHorarios() {
+        horarioElement.innerHTML = ''; // Limpa os horários anteriores
+        const diaSemana = dataSelecionada.getDay(); // Pega o dia da semana (0 = domingo, 6 = sábado)
 
-    function gerarHorarios(inicio, fim, lista) {
-        let h = inicio;
-        let m = 0;
+        let horariosDisponiveis = [];
+        let horaAtual = 8;
+        let minutoAtual = 0;
 
-        while (h < fim || (h === fim && m === 0)) {
-            lista.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
-            m += 30;
-            if (m === 60) {
-                m = 0;
-                h++;
+        // Preenche os horários dependendo do dia da semana
+        if (diaSemana === 6) {  // Se for sábado
+            // Preenche os horários das 08:00 às 12:00 para o sábado
+            while (horaAtual < 12 || (horaAtual === 12 && minutoAtual === 0)) {
+                let horaFormatada = horaAtual.toString().padStart(2, '0');
+                let minutoFormatado = minutoAtual.toString().padStart(2, '0');
+                horariosDisponiveis.push(`${horaFormatada}:${minutoFormatado}`);
+                
+                // Avança 30 minutos
+                minutoAtual += 30;
+                if (minutoAtual === 60) {
+                    minutoAtual = 0;
+                    horaAtual += 1;
+                }
+            }
+        } else if (diaSemana === 0) {  // Se for domingo
+            horarioElement.innerHTML = '<p>FECHADO</p>';
+            return;
+        } else {  // De segunda a sexta-feira
+            // Preenche os horários das 08:00 às 12:00
+            while (horaAtual < 12 || (horaAtual === 12 && minutoAtual === 0)) {
+                let horaFormatada = horaAtual.toString().padStart(2, '0');
+                let minutoFormatado = minutoAtual.toString().padStart(2, '0');
+                horariosDisponiveis.push(`${horaFormatada}:${minutoFormatado}`);
+                
+                // Avança 30 minutos
+                minutoAtual += 30;
+                if (minutoAtual === 60) {
+                    minutoAtual = 0;
+                    horaAtual += 1;
+                }
+            }
+
+            // Preenche os horários das 14:00 às 18:00
+            horaAtual = 14;
+            minutoAtual = 0;
+
+            while (horaAtual < 18 || (horaAtual === 18 && minutoAtual === 0)) {
+                let horaFormatada = horaAtual.toString().padStart(2, '0');
+                let minutoFormatado = minutoAtual.toString().padStart(2, '0');
+                horariosDisponiveis.push(`${horaFormatada}:${minutoFormatado}`);
+                
+                // Avança 30 minutos
+                minutoAtual += 30;
+                if (minutoAtual === 60) {
+                    minutoAtual = 0;
+                    horaAtual += 1;
+                }
             }
         }
-    }
+    
+        // Busca os horários MANICURE já agendados no banco de dados
+        fetch(`/get_horarios/${dataSelecionada.toISOString().split('T')[0]}`)
+            .then(response => response.json())
+            .then(horariosOcupados => {
+                console.log('Horários ocupados recebidos do backend:', horariosOcupados);
 
-    function preencherHorarios() {
-        horariosElement.innerHTML = '';
+                // ✅ Converte os objetos recebidos (com campo "horario") em strings no formato "HH:MM"
+                const horariosOcupadosFormatados = horariosOcupados.map(h => h.horario.slice(0, 5));
+                console.log('Horários ocupados formatados:', horariosOcupadosFormatados);
 
-        if (!dataSelecionada) return;
-
-        const diaSemana = dataSelecionada.getDay();
-        let horarios = [];
-
-        if (diaSemana === 0) {
-            horariosElement.innerHTML = '<tr><td>FECHADO</td></tr>';
-            return;
-        }
-
-        if (diaSemana === 6) {
-            gerarHorarios(8, 12, horarios);
-        } else {
-            gerarHorarios(8, 12, horarios);
-            gerarHorarios(14, 18, horarios);
-        }
-
-        fetch(`/get_horarios/${inputData.value}`)
-            .then(res => res.json())
-            .then(ocupados => {
-
-                const horariosOcupados = ocupados.map(h => h.horario.slice(0, 5));
-                let tr;
-
-                horarios.forEach((hora, index) => {
-
-                    if (index % 6 === 0) tr = document.createElement('tr');
+                // Exibe os horários em linhas com 6 colunas
+                for (let i = 0; i < horariosDisponiveis.length; i++) {
+                    if (i % 6 === 0) {
+                        var tr = document.createElement('tr'); // nova linha
+                    }
 
                     const td = document.createElement('td');
-                    td.innerText = hora;
+                    td.innerText = horariosDisponiveis[i];
 
-                    if (horariosOcupados.includes(hora)) {
-                        td.classList.add('indisponivel');
+                    // Verifica se o horário está ocupado
+                    if (horariosOcupadosFormatados.includes(horariosDisponiveis[i])) {
+                        td.classList.add('indisponivel'); // aplica estilo para horários ocupados
+                        console.log(`${horariosDisponiveis[i]} está OCUPADO`);
                     } else {
                         td.classList.add('horario');
-                        td.addEventListener('click', () => selecionarHorario(hora));
+                        td.addEventListener('click', () => selecionarHorario(horariosDisponiveis[i])); // clique no horário disponível
                     }
 
                     tr.appendChild(td);
 
-                    if ((index + 1) % 6 === 0 || index === horarios.length - 1) {
-                        horariosElement.appendChild(tr);
+                    if ((i + 1) % 6 === 0 || i === horariosDisponiveis.length - 1) {
+                        horarioElement.appendChild(tr); // adiciona a linha à tabela
                     }
-                });
-            });
-    }
+                }
+            })
+            .catch(error => console.error('Erro ao buscar horários:', error));
 
+        }
+
+
+
+        
+    // Função para selecionar o horário
     function selecionarHorario(hora) {
-        document.querySelectorAll('.horario').forEach(h => h.classList.remove('selecionado'));
+        // Limpa a seleção anterior
+        const horarios = document.querySelectorAll('.horario');
+        horarios.forEach(h => h.classList.remove('selecionado'));
 
-        const selecionado = [...document.querySelectorAll('.horario')]
+        // Adiciona a classe de destaque no horário selecionado
+        const horarioElement = Array.from(document.querySelectorAll('.horario'))
             .find(h => h.innerText === hora);
-
-        if (selecionado) selecionado.classList.add('selecionado');
+        
+        if (horarioElement) {
+            horarioElement.classList.add('selecionado');
+        }
 
         inputHorario.value = hora;
         horarioSelecionado = true;
         verificarFormulario();
     }
 
-    /* ================= FORMULÁRIO ================= */
-
+    // Função para verificar se todos os campos estão preenchidos
     function verificarFormulario() {
-        btnAgendar.disabled = !(dataSelecionada && horarioSelecionado && pagamentoSelecionado);
+        if (dataSelecionada && horarioSelecionado && pagamentoSelecionado) {
+            btnAgendar.disabled = false;  // Habilita o botão de agendamento
+        } else {
+            btnAgendar.disabled = true;   // Desabilita o botão de agendamento
+        }
     }
 
+    // Função para ativar o pagamento
     radiosPagamento.forEach(radio => {
         radio.addEventListener('change', () => {
             pagamentoSelecionado = true;
@@ -182,17 +229,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    btnPrev.addEventListener('click', e => {
-        e.preventDefault();
-        dataAtual.setMonth(dataAtual.getMonth() - 1);
-        atualizarCalendario();
+    // Função para mover o calendário para o mês anterior
+    btnPrev.addEventListener('click', function (event) {
+        event.preventDefault(); // Impede o comportamento padrão de navegação
+        dataAtual.setMonth(dataAtual.getMonth() - 1);  // Subtrai 1 do mês
+        atualizarCalendario();  // Atualiza o calendário
     });
 
-    btnNext.addEventListener('click', e => {
-        e.preventDefault();
-        dataAtual.setMonth(dataAtual.getMonth() + 1);
-        atualizarCalendario();
+    // Função para mover o calendário para o próximo mês
+    btnNext.addEventListener('click', function (event) {
+        event.preventDefault(); // Impede o comportamento padrão de navegação
+        dataAtual.setMonth(dataAtual.getMonth() + 1);  // Adiciona 1 ao mês
+        atualizarCalendario();  // Atualiza o calendário
     });
 
+    // Inicializa o calendário e horários
     atualizarCalendario();
 });
+
+
