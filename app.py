@@ -8,8 +8,16 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import time
 import sqlite3
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app, resources={
+    r"/get_horarios/*": {
+        "origins": "https://galeriashalom.com.br"
+    }
+})
+
 
 # ----------------------
 # Configuração do banco
