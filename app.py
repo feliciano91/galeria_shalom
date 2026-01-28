@@ -11,6 +11,33 @@ import sqlite3
 import os
 from psycopg2.pool import SimpleConnectionPool
 
+# ----------------------
+# CONFIG BANCO (Render)
+# ----------------------
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+pool = None
+
+def init_db_pool():
+    global pool
+    if pool is None:
+        pool = SimpleConnectionPool(
+            minconn=1,
+            maxconn=5,
+            dsn=DATABASE_URL
+        )
+
+def get_db_connection():
+    if pool is None:
+        init_db_pool()
+    return pool.getconn()
+
+def close_db_connection(conn):
+    pool.putconn(conn)
+
+# ----------------------
+# APP FLASK
+# ----------------------
 app = Flask(__name__)
 
 # 🔥 CORS – libera apenas seu domínio
@@ -23,23 +50,8 @@ CORS(app, resources={
     }
 })
 
-# ----------------------
-# CONFIG BANCO (Render)
-# ----------------------
-DATABASE_URL = os.environ.get("DATABASE_URL")
-
-pool = SimpleConnectionPool(
-    minconn=1,
-    maxconn=5,
-    dsn=DATABASE_URL,
-    sslmode="require"
-)
-
-def get_db_connection():
-    return pool.getconn()
-
-def close_db_connection(conn):
-    pool.putconn(conn)
+# 🔥 inicializa o pool DEPOIS de tudo definido
+init_db_pool()
 # =======================
 
 @app.route("/test-db")
