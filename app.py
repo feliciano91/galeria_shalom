@@ -1,24 +1,22 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
-#from flask_mysqldb import MySQL
-from datetime import datetime  # Importando o módulo datetime
-from datetime import timedelta
-from sqlalchemy import create_engine, Column, Integer, String, Date, Time
-from sqlalchemy.orm import declarative_base, sessionmaker
-import psycopg2
-from psycopg2.extras import RealDictCursor
-from datetime import time
-from flask import request, redirect, url_for, flash
-import sqlite3
+from flask import Flask, jsonify
 from flask_cors import CORS
-from flask import Flask
-
-
+import psycopg2
+from datetime import datetime
 
 app = Flask(__name__)
-#Senha de teste
-app.secret_key = '123456'
+
+# 🔥 CORS – libera apenas seu domínio
+CORS(app, resources={
+    r"/get_*": {
+        "origins": [
+            "https://galeriashalom.com.br",
+            "https://www.galeriashalom.com.br"
+        ]
+    }
+})
+
 # ----------------------
-# Configuração do banco
+# CONFIG BANCO (Render)
 # ----------------------
 DATABASE_URL = (
     "postgresql://galeria_shalom_db_user:"
@@ -28,641 +26,96 @@ DATABASE_URL = (
     "?sslmode=require"
 )
 
-
-
 def get_db_connection():
     return psycopg2.connect(DATABASE_URL)
 
-# ✅ A FUNÇÃO FICA AQUI (FORA DAS ROTAS)
-def gerar_horarios():
-    horarios = []
-    for h in range(8, 18):  # 08:00 até 17:00
-        horarios.append(time(h, 0))
-    return horarios
-
-#===============================  MANICURE  ===============================================
-
-
-#========================== AGENDAMENTO PARA MANICURE====================================================
-@app.route('/agenda1manicure', methods=['POST'])
-def agenda1manicure():
-    dados = request.get_json()
-
-    nome = dados.get('nome')
-    contato = dados.get('contato')
-    data = dados.get('data')
-    horario = dados.get('horario')
-    pagamento = dados.get('pagamento')
-    servico = dados.get('servico')
-
+# =======================
+# MANICURE
+# =======================
+@app.route('/get_horarios/<data>')
+def get_horarios(data):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
         cursor.execute("""
-            INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
+            SELECT nome, contato, horario, pagamento, servico
+            FROM agendamentosmanicure
+            WHERE data = %s
+        """, (data,))
 
-        conn.commit()
+        agendamentos = cursor.fetchall()
+
+        resultado = []
+        for nome, contato, horario, pagamento, servico in agendamentos:
+            resultado.append({
+                "nome": nome,
+                "contato": contato,
+                "horario": horario.strftime('%H:%M'),
+                "pagamento": pagamento,
+                "servico": servico
+            })
+
+        return jsonify(resultado)
 
     except Exception as e:
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Erro ao salvar agendamento"
-        }), 500
+        print("ERRO /get_horarios:", e)
+        return jsonify({"erro": "Erro ao buscar horários"}), 500
 
     finally:
-        cursor.close()
-        conn.close()
-
-    data_formatada = datetime.strptime(data, '%Y-%m-%d').strftime('%d-%m-%Y')
-
-    return jsonify({
-        "status": "ok",
-        "mensagem": "Agendamento confirmado",
-        "data": data_formatada,
-        "horario": horario,
-        "pagamento": pagamento
-    })
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 
-@app.route('/agenda2manicure', methods=['POST'])
-def agenda2manicure():
-    dados = request.get_json()
-
-    nome = dados.get('nome')
-    contato = dados.get('contato')
-    data = dados.get('data')
-    horario = dados.get('horario')
-    pagamento = dados.get('pagamento')
-    servico = dados.get('servico')
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        hora_base = datetime.strptime(horario, "%H:%M")
-        hora_bloqueada = hora_base + timedelta(minutes=30)
-        horario_bloqueado = hora_bloqueada.strftime("%H:%M")
-
-        cursor.execute("""
-            INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
-
-        cursor.execute("""
-            INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (
-            nome,
-            contato,
-            data,
-            horario_bloqueado,
-            "Bloqueado",
-            "Bloqueio automático"
-        ))
-
-        conn.commit()
-
-    except Exception as e:
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Erro ao salvar agendamento"
-        }), 500
-
-    finally:
-        cursor.close()
-        conn.close()
-
-    data_formatada = datetime.strptime(data, '%Y-%m-%d').strftime('%d-%m-%Y')
-
-    return jsonify({
-        "status": "ok",
-        "mensagem": "Agendamento confirmado com bloqueio automático",
-        "data": data_formatada,
-        "horario": horario,
-        "horario_bloqueado": horario_bloqueado,
-        "pagamento": pagamento
-    })
-
-
-@app.route('/agenda3manicure', methods=['POST'])
-def agenda3manicure():
-    dados = request.get_json()
-
-    nome = dados.get('nome')
-    contato = dados.get('contato')
-    data = dados.get('data')
-    horario = dados.get('horario')
-    pagamento = dados.get('pagamento')
-    servico = dados.get('servico')
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        # 1️⃣ Agendamento principal
-        cursor.execute("""
-            INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
-
-        # 2️⃣ Bloqueios (+30 e +60)
-        hora_base = datetime.strptime(horario, "%H:%M")
-
-        bloqueios = [
-            hora_base + timedelta(minutes=30),
-            hora_base + timedelta(minutes=60)
-        ]
-
-        horarios_bloqueados = []
-
-        for hb in bloqueios:
-            h = hb.strftime("%H:%M")
-            horarios_bloqueados.append(h)
-
-            cursor.execute("""
-                INSERT INTO agendamentosmanicure
-                (nome, contato, data, horario, pagamento, servico)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """, (
-                nome,
-                contato,
-                data,
-                h,
-                "Bloqueado",
-                "Bloqueio automático"
-            ))
-
-        conn.commit()
-
-    except Exception as e:
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Erro ao salvar agendamento"
-        }), 500
-
-    finally:
-        cursor.close()
-        conn.close()
-
-    data_formatada = datetime.strptime(data, '%Y-%m-%d').strftime('%d-%m-%Y')
-
-    return jsonify({
-        "status": "ok",
-        "mensagem": "Agendamento confirmado",
-        "data": data_formatada,
-        "horario": horario,
-        "horarios_bloqueados": horarios_bloqueados,
-        "pagamento": pagamento
-    })
-    
-    
-@app.route('/agenda4manicure', methods=['POST'])
-def agenda4manicure():
-    dados = request.get_json()
-
-    nome = dados.get('nome')
-    contato = dados.get('contato')
-    data = dados.get('data')
-    horario = dados.get('horario')
-    pagamento = dados.get('pagamento')
-    servico = dados.get('servico')
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        # 1️⃣ Agendamento principal
-        cursor.execute("""
-            INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
-
-        # 2️⃣ Bloqueios (+30, +60, +90)
-        hora_base = datetime.strptime(horario, "%H:%M")
-
-        bloqueios = [
-            hora_base + timedelta(minutes=30),
-            hora_base + timedelta(minutes=60),
-            hora_base + timedelta(minutes=90)
-        ]
-
-        horarios_bloqueados = []
-
-        for hb in bloqueios:
-            h = hb.strftime("%H:%M")
-            horarios_bloqueados.append(h)
-
-            cursor.execute("""
-                INSERT INTO agendamentosmanicure
-                (nome, contato, data, horario, pagamento, servico)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """, (
-                nome,
-                contato,
-                data,
-                h,
-                "Bloqueado",
-                "Bloqueio automático"
-            ))
-
-        conn.commit()
-
-    except Exception as e:
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Erro ao salvar agendamento"
-        }), 500
-
-    finally:
-        cursor.close()
-        conn.close()
-
-    data_formatada = datetime.strptime(data, '%Y-%m-%d').strftime('%d-%m-%Y')
-
-    return jsonify({
-        "status": "ok",
-        "mensagem": "Agendamento confirmado",
-        "data": data_formatada,
-        "horario": horario,
-        "horarios_bloqueados": horarios_bloqueados,
-        "pagamento": pagamento
-    })
-
-
-#===============================  PODOLOGIA  ===============================================
-
-#============================ AGENDAMENTO PARA PODOLOGIA ==================================================
-@app.route('/agenda1podologia', methods=['POST'])
-def agenda1podologia():
-    dados = request.get_json()
-
-    nome = dados.get('nome')
-    contato = dados.get('contato')
-    data = dados.get('data')
-    horario = dados.get('horario')
-    pagamento = dados.get('pagamento')
-    servico = dados.get('servico')
-
+# =======================
+# PODOLOGIA
+# =======================
+@app.route('/get_horariop/<data>')
+def get_horariop(data):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
         cursor.execute("""
-            INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
-
-        conn.commit()
-
-    except Exception as e:
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Erro ao salvar agendamento"
-        }), 500
-
-    finally:
-        cursor.close()
-        conn.close()
-
-    data_formatada = datetime.strptime(data, '%Y-%m-%d').strftime('%d-%m-%Y')
-
-    return jsonify({
-        "status": "ok",
-        "mensagem": "Agendamento confirmado",
-        "data": data_formatada,
-        "horario": horario,
-        "pagamento": pagamento
-    })
-
-@app.route('/agenda2podologia', methods=['POST'])
-def agenda2podologia():
-    dados = request.get_json()
-
-    nome = dados.get('nome')
-    contato = dados.get('contato')
-    data = dados.get('data')
-    horario = dados.get('horario')
-    pagamento = dados.get('pagamento')
-    servico = dados.get('servico')
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        hora_base = datetime.strptime(horario, "%H:%M")
-        hora_bloqueada = hora_base + timedelta(minutes=30)
-        horario_bloqueado = hora_bloqueada.strftime("%H:%M")
-
-        cursor.execute("""
-            INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
-
-        cursor.execute("""
-            INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (
-            nome,
-            contato,
-            data,
-            horario_bloqueado,
-            "Bloqueado",
-            "Bloqueio automático"
-        ))
-
-        conn.commit()
-
-    except Exception as e:
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Erro ao salvar agendamento"
-        }), 500
-
-    finally:
-        cursor.close()
-        conn.close()
-
-    data_formatada = datetime.strptime(data, '%Y-%m-%d').strftime('%d-%m-%Y')
-
-    return jsonify({
-        "status": "ok",
-        "mensagem": "Agendamento confirmado com bloqueio",
-        "data": data_formatada,
-        "horario": horario,
-        "horario_bloqueado": horario_bloqueado,
-        "pagamento": pagamento
-    })
-
-
-@app.route('/agenda3podologia', methods=['POST'])
-def agenda3podologia():
-    dados = request.get_json()
-
-    nome = dados.get('nome')
-    contato = dados.get('contato')
-    data = dados.get('data')
-    horario = dados.get('horario')
-    pagamento = dados.get('pagamento')
-    servico = dados.get('servico')
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        # 1️⃣ Agendamento principal
-        cursor.execute("""
-            INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
-
-        # 2️⃣ Bloqueios (+30 e +60)
-        hora_base = datetime.strptime(horario, "%H:%M")
-
-        bloqueios = [
-            hora_base + timedelta(minutes=30),
-            hora_base + timedelta(minutes=60)
-        ]
-
-        horarios_bloqueados = []
-
-        for hb in bloqueios:
-            h = hb.strftime("%H:%M")
-            horarios_bloqueados.append(h)
-
-            cursor.execute("""
-                INSERT INTO agendamentospodologa
-                (nome, contato, data, horario, pagamento, servico)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """, (
-                nome,
-                contato,
-                data,
-                h,
-                "Bloqueado",
-                "Bloqueio automático"
-            ))
-
-        conn.commit()
-
-    except Exception as e:
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Erro ao salvar agendamento"
-        }), 500
-
-    finally:
-        cursor.close()
-        conn.close()
-
-    data_formatada = datetime.strptime(data, '%Y-%m-%d').strftime('%d-%m-%Y')
-
-    return jsonify({
-        "status": "ok",
-        "mensagem": "Agendamento confirmado",
-        "data": data_formatada,
-        "horario": horario,
-        "horarios_bloqueados": horarios_bloqueados,
-        "pagamento": pagamento
-    })
-
-@app.route('/agenda4podologia', methods=['POST'])
-def aagenda4podologia():
-    dados = request.get_json()
-
-    nome = dados.get('nome')
-    contato = dados.get('contato')
-    data = dados.get('data')
-    horario = dados.get('horario')
-    pagamento = dados.get('pagamento')
-    servico = dados.get('servico')
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        # 1️⃣ Agendamento principal
-        cursor.execute("""
-            INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
-
-        # 2️⃣ Bloqueios (+30, +60, +90)
-        hora_base = datetime.strptime(horario, "%H:%M")
-
-        bloqueios = [
-            hora_base + timedelta(minutes=30),
-            hora_base + timedelta(minutes=60),
-            hora_base + timedelta(minutes=90)
-        ]
-
-        horarios_bloqueados = []
-
-        for hb in bloqueios:
-            h = hb.strftime("%H:%M")
-            horarios_bloqueados.append(h)
-
-            cursor.execute("""
-                INSERT INTO agendamentospodologa
-                (nome, contato, data, horario, pagamento, servico)
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """, (
-                nome,
-                contato,
-                data,
-                h,
-                "Bloqueado",
-                "Bloqueio automático"
-            ))
-
-        conn.commit()
-
-    except Exception as e:
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Erro ao salvar agendamento"
-        }), 500
-
-    finally:
-        cursor.close()
-        conn.close()
-
-    data_formatada = datetime.strptime(data, '%Y-%m-%d').strftime('%d-%m-%Y')
-
-    return jsonify({
-        "status": "ok",
-        "mensagem": "Agendamento confirmado",
-        "data": data_formatada,
-        "horario": horario,
-        "horarios_bloqueados": horarios_bloqueados,
-        "pagamento": pagamento
-    })
-
-
-#==========================================================================================================================
-#==========================================================================================================================
-
-@app.route('/api/manicure/horarios/<data>')
-def get_horarios_manicure(data):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT horario
-        FROM agendamentosmanicure
-        WHERE data = %s
-    """, (data,))
-
-    horarios = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    return jsonify([
-        h[0].strftime('%H:%M') for h in horarios
-    ])
-
-#---------------------------------------------------------------------------------------------------------------
-
-@app.route('/api/podologia/horarios/<data>')
-def get_horarios_podologia(data):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT horario
-        FROM agendamentospodologa
-        WHERE data = %s
-    """, (data,))
-
-    horarios = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    return jsonify([
-        h[0].strftime('%H:%M') for h in horarios
-    ])
-
-
-#--------------------------------------- CANCELAR AGENDAMENTO---------------------------------------------------------------------
-
-@app.route('/api/podologia/cancelar', methods=['POST'])
-def cancelar_agendamentop():
-    data = request.json.get('data')
-    contato = request.json.get('contato')
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        # 🔍 Verifica se existe
-        cursor.execute("""
-            SELECT id
+            SELECT nome, contato, horario, pagamento, servico
             FROM agendamentospodologa
-            WHERE data = %s AND contato = %s
-        """, (data, contato))
+            WHERE data = %s
+        """, (data,))
 
-        agendamento = cursor.fetchone()
+        agendamentos = cursor.fetchall()
 
-        if not agendamento:
-            return jsonify({
-                "status": "erro",
-                "mensagem": "Agendamento não encontrado"
-            }), 404
+        resultado = []
+        for nome, contato, horario, pagamento, servico in agendamentos:
+            resultado.append({
+                "nome": nome,
+                "contato": contato,
+                "horario": horario.strftime('%H:%M'),
+                "pagamento": pagamento,
+                "servico": servico
+            })
 
-        # ❌ Cancela
-        cursor.execute("""
-            DELETE FROM agendamentospodologa
-            WHERE data = %s AND contato = %s
-        """, (data, contato))
-
-        conn.commit()
-
-        return jsonify({
-            "status": "ok",
-            "mensagem": "Agendamento cancelado com sucesso"
-        })
+        return jsonify(resultado)
 
     except Exception as e:
-        print("Erro:", e)
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Erro ao cancelar agendamento"
-        }), 500
+        print("ERRO /get_horariop:", e)
+        return jsonify({"erro": "Erro ao buscar horários"}), 500
 
     finally:
-        cursor.close()
-        conn.close()
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 
+# =======================
+# HEALTH CHECK (Render)
+# =======================
+@app.route('/')
+def health():
+    return jsonify({"status": "API Galeria Shalom ONLINE 🚀"})
 
-#==========================================================================================================================
-#==========================================================================================================================
-
-
-app = Flask(__name__)
-
-CORS(app, resources={
-    r"/api/*": {
-        "origins": [
-            "https://www.galeriashalom.com.br",
-            "https://galeriashalom.com.br"
-        ]
-    }
-})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
