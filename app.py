@@ -35,6 +35,18 @@ def get_db_connection():
     )
 
 # =======================
+
+@app.route("/test-db")
+def test_db():
+    try:
+        conn = get_db_connection()
+        conn.close()
+        return "Conexão com banco OK 🚀"
+    except Exception as e:
+        return str(e), 500
+
+
+
 # MANICURE
 # =======================
 @app.route('/get_horarios/<data>')
