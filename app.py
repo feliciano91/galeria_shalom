@@ -34,6 +34,9 @@ def get_db_connection():
 # =======================
 @app.route('/get_horarios/<data>')
 def get_horarios(data):
+    conn = None
+    cursor = None
+
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -45,13 +48,20 @@ def get_horarios(data):
         """, (data,))
 
         agendamentos = cursor.fetchall()
-
         resultado = []
+
         for nome, contato, horario, pagamento, servico in agendamentos:
+            if horario is None:
+                horario_formatado = None
+            elif isinstance(horario, str):
+                horario_formatado = horario[:5]
+            else:
+                horario_formatado = horario.strftime('%H:%M')
+
             resultado.append({
                 "nome": nome,
                 "contato": contato,
-                "horario": horario.strftime('%H:%M'),
+                "horario": horario_formatado,
                 "pagamento": pagamento,
                 "servico": servico
             })
@@ -60,7 +70,7 @@ def get_horarios(data):
 
     except Exception as e:
         print("ERRO /get_horarios:", e)
-        return jsonify({"erro": "Erro ao buscar horários"}), 500
+        return jsonify({"erro": str(e)}), 500
 
     finally:
         if cursor:
@@ -69,12 +79,19 @@ def get_horarios(data):
             conn.close()
 
 
+
 # =======================
 # PODOLOGIA
 # =======================
 @app.route('/get_horariop/<data>')
 def get_horariop(data):
+    conn = None
+    cursor = None
+
     try:
+        # 🔹 Converte string da URL para DATE
+        data_formatada = datetime.strptime(data, "%Y-%m-%d").date()
+
         conn = get_db_connection()
         cursor = conn.cursor()
 
@@ -82,7 +99,7 @@ def get_horariop(data):
             SELECT nome, contato, horario, pagamento, servico
             FROM agendamentospodologa
             WHERE data = %s
-        """, (data,))
+        """, (data_formatada,))
 
         agendamentos = cursor.fetchall()
 
@@ -91,23 +108,25 @@ def get_horariop(data):
             resultado.append({
                 "nome": nome,
                 "contato": contato,
-                "horario": horario.strftime('%H:%M'),
+                "horario": horario.strftime('%H:%M') if horario else None,
                 "pagamento": pagamento,
                 "servico": servico
             })
 
         return jsonify(resultado)
 
+    except ValueError:
+        return jsonify({"erro": "Formato de data inválido. Use YYYY-MM-DD"}), 400
+
     except Exception as e:
         print("ERRO /get_horariop:", e)
-        return jsonify({"erro": "Erro ao buscar horários"}), 500
+        return jsonify({"erro": str(e)}), 500
 
     finally:
-        if cursor:
+        if cursor is not None:
             cursor.close()
-        if conn:
+        if conn is not None:
             conn.close()
-
 
 # =======================
 # HEALTH CHECK (Render)
