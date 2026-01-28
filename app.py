@@ -14,44 +14,18 @@ from psycopg2.pool import SimpleConnectionPool
 # ----------------------
 # CONFIG BANCO (Render)
 # ----------------------
-DATABASE_URL = os.environ.get("DATABASE_URL")
-
-pool = None
-
-def init_db_pool():
-    global pool
-    if pool is None:
-        pool = SimpleConnectionPool(
-            minconn=1,
-            maxconn=5,
-            dsn=DATABASE_URL
-        )
-
-def get_db_connection():
-    if pool is None:
-        init_db_pool()
-    return pool.getconn()
-
-def close_db_connection(conn):
-    pool.putconn(conn)
-
-# ----------------------
-# APP FLASK
-# ----------------------
 app = Flask(__name__)
 
-# 🔥 CORS – libera apenas seu domínio
-CORS(app, resources={
-    r"/get_*": {
-        "origins": [
-            "https://galeriashalom.com.br",
-            "https://www.galeriashalom.com.br"
-        ]
-    }
-})
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
-# 🔥 inicializa o pool DEPOIS de tudo definido
-init_db_pool()
+conn = psycopg2.connect(DATABASE_URL)
+
+@app.route("/test")
+def test():
+    cur = conn.cursor()
+    cur.execute("SELECT 1")
+    return jsonify({"status": "conectado com sucesso 🚀"})
+
 # =======================
 
 @app.route("/test-db")
