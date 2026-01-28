@@ -552,10 +552,11 @@ def get_horarios(data):
         lista_agendamentos.append({
             "nome": nome,
             "contato": contato,
-            "horario": horario.strftime('%H:%M'),  # 🔥 SIMPLES
+            "horario": horario.strftime('%H:%M') if horario else None,
             "pagamento": pagamento,
             "servico": servico
         })
+
 
     cursor.close()
     conn.close()
@@ -584,13 +585,14 @@ def get_horariop(data):
     lista_agendamentosp = []
 
     for nome, contato, horario, pagamento, servico in agendamentos:
-        lista_agendamentosp.append({
+        lista_agendamentos.append({
             "nome": nome,
             "contato": contato,
-            "horario": horario.strftime('%H:%M'),  # 🔥 SIMPLES
+            "horario": horario.strftime('%H:%M') if horario else None,
             "pagamento": pagamento,
             "servico": servico
         })
+
 
     cursor.close()
     conn.close()
