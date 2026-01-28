@@ -51,6 +51,9 @@ def gerar_horarios():
     return horarios
 
 #===============================  MANICURE  ===============================================
+@app.route('/api/teste')
+def teste():
+    return {"status": "backend funcionando"}
 
 
 #========================== AGENDAMENTO PARA MANICURE====================================================
