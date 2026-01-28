@@ -9,6 +9,7 @@ from datetime import timedelta
 from datetime import time
 import sqlite3
 import os
+from psycopg2.pool import SimpleConnectionPool
 
 app = Flask(__name__)
 
@@ -27,13 +28,18 @@ CORS(app, resources={
 # ----------------------
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
-def get_db_connection():
-    return psycopg2.connect(
-        DATABASE_URL,
-        sslmode="require",
-        connect_timeout=10
-    )
+pool = SimpleConnectionPool(
+    minconn=1,
+    maxconn=5,
+    dsn=DATABASE_URL,
+    sslmode="require"
+)
 
+def get_db_connection():
+    return pool.getconn()
+
+def close_db_connection(conn):
+    pool.putconn(conn)
 # =======================
 
 @app.route("/test-db")
@@ -53,7 +59,6 @@ def test_db():
 def get_horarios(data):
     conn = None
     cursor = None
-
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -65,20 +70,13 @@ def get_horarios(data):
         """, (data,))
 
         agendamentos = cursor.fetchall()
+
         resultado = []
-
         for nome, contato, horario, pagamento, servico in agendamentos:
-            if horario is None:
-                horario_formatado = None
-            elif isinstance(horario, str):
-                horario_formatado = horario[:5]
-            else:
-                horario_formatado = horario.strftime('%H:%M')
-
             resultado.append({
                 "nome": nome,
                 "contato": contato,
-                "horario": horario_formatado,
+                "horario": horario.strftime('%H:%M'),
                 "pagamento": pagamento,
                 "servico": servico
             })
@@ -87,13 +85,13 @@ def get_horarios(data):
 
     except Exception as e:
         print("ERRO /get_horarios:", e)
-        return jsonify({"erro": str(e)}), 500
+        return jsonify({"erro": "Erro ao buscar horários"}), 500
 
     finally:
         if cursor:
             cursor.close()
         if conn:
-            conn.close()
+            close_db_connection(conn)
 
 
 
@@ -104,11 +102,7 @@ def get_horarios(data):
 def get_horariop(data):
     conn = None
     cursor = None
-
     try:
-        # 🔹 Converte string da URL para DATE
-        data_formatada = datetime.strptime(data, "%Y-%m-%d").date()
-
         conn = get_db_connection()
         cursor = conn.cursor()
 
@@ -116,7 +110,7 @@ def get_horariop(data):
             SELECT nome, contato, horario, pagamento, servico
             FROM agendamentospodologa
             WHERE data = %s
-        """, (data_formatada,))
+        """, (data,))
 
         agendamentos = cursor.fetchall()
 
@@ -125,25 +119,23 @@ def get_horariop(data):
             resultado.append({
                 "nome": nome,
                 "contato": contato,
-                "horario": horario.strftime('%H:%M') if horario else None,
+                "horario": horario.strftime('%H:%M'),
                 "pagamento": pagamento,
                 "servico": servico
             })
 
         return jsonify(resultado)
 
-    except ValueError:
-        return jsonify({"erro": "Formato de data inválido. Use YYYY-MM-DD"}), 400
-
     except Exception as e:
         print("ERRO /get_horariop:", e)
-        return jsonify({"erro": str(e)}), 500
+        return jsonify({"erro": "Erro ao buscar horários"}), 500
 
     finally:
-        if cursor is not None:
+        if cursor:
             cursor.close()
-        if conn is not None:
-            conn.close()
+        if conn:
+            close_db_connection(conn)
+
 
 # =======================
 # HEALTH CHECK (Render)
