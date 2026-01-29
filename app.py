@@ -26,11 +26,14 @@ DATABASE_URL = (
     "A9vUujpt3sM1D01UNz3x4fJi8QWnejTo@"
     "dpg-d55iorumcj7s73fcj4dg-a.oregon-postgres.render.com:5432/"
     "galeria_shalom_db"
-    "?sslmode=require"
 )
 
+
 def get_db_connection():
-    return psycopg2.connect(DATABASE_URL)
+    return psycopg2.connect(
+        DATABASE_URL,
+        sslmode="require"
+    )
 
 # ======================================
 # ROTAS
