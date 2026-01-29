@@ -111,7 +111,10 @@ def get_horarios_manicure(data):
 
         horarios = cursor.fetchall()
 
-        return jsonify([h[0] if isinstance(h[0], str) else h[0].strftime('%H:%M') for h in horarios])
+        return jsonify([
+            h[0] if isinstance(h[0], str) else h[0].strftime('%H:%M')
+            for h in horarios
+        ])
 
     except Exception as e:
         print("ERRO COMPLETO:", repr(e))
@@ -126,7 +129,6 @@ def get_horarios_manicure(data):
             conn.close()
         except:
             pass
-])
 
 
 # ======================================
