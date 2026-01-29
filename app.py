@@ -1,14 +1,116 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import psycopg2
+from psycopg2.extras import RealDictCursor
+from datetime import datetime, time
 
+# ======================================
+# APP
+# ======================================
 app = Flask(__name__)
 
-@app.route('/api/teste')
-def teste():
-    return jsonify({"status": "backend funcionando"})
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "https://www.galeriashalom.com.br",
+            "https://galeriashalom.com.br"
+        ]
+    }
+})
+
+# ======================================
+# BANCO
+# ======================================
+DATABASE_URL = (
+    "postgresql://galeria_shalom_db_user:"
+    "A9vUujpt3sM1D01UNz3x4fJi8QWnejTo@"
+    "dpg-d55iorumcj7s73fcj4dg-a.oregon-postgres.render.com:5432/"
+    "galeria_shalom_db"
+    "?sslmode=require"
+)
+
+def get_db_connection():
+    return psycopg2.connect(DATABASE_URL)
+
+# ======================================
+# ROTAS
+# ======================================
+
+@app.route("/api/agenda1manicure", methods=["POST"])
+def agenda1manicure():
+    dados = request.get_json()
+
+    if not dados:
+        return jsonify({"status": "erro", "mensagem": "JSON inválido"}), 400
+
+    nome = dados.get("nome")
+    contato = dados.get("contato")
+    data = dados.get("data")
+    horario = dados.get("horario")
+    pagamento = dados.get("pagamento")
+    servico = dados.get("servico")
+
+    if not all([nome, contato, data, horario, pagamento, servico]):
+        return jsonify({
+            "status": "erro",
+            "mensagem": "Campos obrigatórios ausentes"
+        }), 400
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO agendamentosmanicure
+            (nome, contato, data, horario, pagamento, servico)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario, pagamento, servico))
+
+        conn.commit()
+
+    except Exception as e:
+        print("ERRO:", e)
+        return jsonify({
+            "status": "erro",
+            "mensagem": "Erro ao salvar agendamento"
+        }), 500
+
+    finally:
+        cursor.close()
+        conn.close()
+
+    data_formatada = datetime.strptime(data, "%Y-%m-%d").strftime("%d/%m/%Y")
+
+    return jsonify({
+        "status": "ok",
+        "mensagem": "Agendamento confirmado",
+        "data": data_formatada,
+        "horario": horario,
+        "pagamento": pagamento
+    })
+
 
 @app.route('/api/manicure/horarios/<data>')
 def get_horarios_manicure(data):
-    return jsonify({"data": data})
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
-if __name__ == "__main__":
-    app.run()
+    cursor.execute("""
+        SELECT horario
+        FROM agendamentosmanicure
+        WHERE data = %s
+    """, (data,))
+
+    horarios = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify([h[0].strftime('%H:%M') for h in horarios])
+
+
+# ======================================
+# MAIN
+# ======================================
+if __name__ == '__main__':
+    app.run(debug=True)
