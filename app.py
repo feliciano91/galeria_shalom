@@ -95,21 +95,38 @@ def agenda1manicure():
 
 @app.route('/api/manicure/horarios/<data>')
 def get_horarios_manicure(data):
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    try:
+        conn = psycopg2.connect(
+            DATABASE_URL,
+            sslmode="require",
+            connect_timeout=5
+        )
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT horario
-        FROM agendamentosmanicure
-        WHERE data = %s
-    """, (data,))
+        cursor.execute("""
+            SELECT horario
+            FROM agendamentosmanicure
+            WHERE data::text = %s
+        """, (data,))
 
-    horarios = cursor.fetchall()
+        horarios = cursor.fetchall()
 
-    cursor.close()
-    conn.close()
+        return jsonify([h[0] if isinstance(h[0], str) else h[0].strftime('%H:%M') for h in horarios])
 
-    return jsonify([h[0].strftime('%H:%M') for h in horarios])
+    except Exception as e:
+        print("ERRO COMPLETO:", repr(e))
+        return jsonify({
+            "erro": str(e),
+            "tipo": type(e).__name__
+        }), 500
+
+    finally:
+        try:
+            cursor.close()
+            conn.close()
+        except:
+            pass
+])
 
 
 # ======================================
