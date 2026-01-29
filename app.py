@@ -21,18 +21,13 @@ CORS(app, resources={
 # ======================================
 # BANCO
 # ======================================
-DATABASE_URL = (
-    "postgresql://galeria_shalom_db_user:"
-    "A9vUujpt3sM1D01UNz3x4fJi8QWnejTo@"
-    "dpg-d55iorumcj7s73fcj4dg-a.oregon-postgres.render.com:5432/"
-    "galeria_shalom_db"
-)
-
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_db_connection():
     return psycopg2.connect(
         DATABASE_URL,
-        sslmode="require"
+        sslmode="require",
+        connect_timeout=5
     )
 
 # ======================================
