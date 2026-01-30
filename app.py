@@ -15,14 +15,9 @@ CORS(app, resources={
     }
 })
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
-
-def get_db_connection():
-    return psycopg2.connect(
-        DATABASE_URL,
-        sslmode="require",
-        connect_timeout=5
-    )
+DATABASE_URL = (
+    "postgresql://postgres.mawrehqblzcaujuakxqp:FSamdGS912026@aws-1-us-east-1.pooler.supabase.com:5432/postgres"
+)
 
 
 # ======================================
