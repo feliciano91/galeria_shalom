@@ -4,9 +4,6 @@ from flask_cors import CORS
 import psycopg2
 from datetime import datetime, time
 
-# ======================================
-# APP
-# ======================================
 app = Flask(__name__)
 
 CORS(app, resources={
@@ -18,12 +15,6 @@ CORS(app, resources={
     }
 })
 
-# ======================================
-# BANCO
-# ======================================
-conn = psycopg2.connect(os.getenv("DATABASE_URL"))
-print("Conectado ao Supabase via Session Pooler!")
-conn.close()
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_db_connection():
@@ -32,6 +23,18 @@ def get_db_connection():
         sslmode="require",
         connect_timeout=5
     )
+
+@app.route("/test-db")
+def test_db():
+    try:
+        conn = get_db_connection()
+        conn.close()
+        return "✅ Conectado ao PostgreSQL (Supabase) com sucesso!"
+    except Exception as e:
+        return f"❌ Erro ao conectar: {e}"
+
+
+
 
 # ======================================
 # ROTAS
