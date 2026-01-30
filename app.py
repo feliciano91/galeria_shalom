@@ -24,108 +24,103 @@ def get_db_connection():
         connect_timeout=5
     )
 
-@app.route("/api/test-db")
-def test_db():
-    try:
-        conn = get_db_connection()
-        conn.close()
-        return jsonify({"status": "ok", "msg": "Banco conectado"})
-    except Exception as e:
-        return jsonify({"status": "erro", "msg": str(e)}), 500
-
-
-
-
 
 # ======================================
 # ROTAS
 # ======================================
 
-@app.route("/api/agenda1manicure", methods=["POST"])
-def agenda1manicure():
-    dados = request.get_json()
+@app.route('/api/manicure/horarios/<data>')
+def get_horarios_manicure(data):
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
-    if not dados:
-        return jsonify({"status": "erro", "mensagem": "JSON inválido"}), 400
+    cursor.execute("""
+        SELECT horario
+        FROM agendamentosmanicure
+        WHERE data = %s
+    """, (data,))
 
-    nome = dados.get("nome")
-    contato = dados.get("contato")
-    data = dados.get("data")
-    horario = dados.get("horario")
-    pagamento = dados.get("pagamento")
-    servico = dados.get("servico")
+    horarios = cursor.fetchall()
 
-    if not all([nome, contato, data, horario, pagamento, servico]):
-        return jsonify({
-            "status": "erro",
-            "mensagem": "Campos obrigatórios ausentes"
-        }), 400
+    cursor.close()
+    conn.close()
+
+    return jsonify([
+        h[0].strftime('%H:%M') for h in horarios
+    ])
+
+#---------------------------------------------------------------------------------------------------------------
+
+@app.route('/api/podologia/horarios/<data>')
+def get_horarios_podologia(data):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT horario
+        FROM agendamentospodologa
+        WHERE data = %s
+    """, (data,))
+
+    horarios = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify([
+        h[0].strftime('%H:%M') for h in horarios
+    ])
+
+
+#--------------------------------------- CANCELAR AGENDAMENTO---------------------------------------------------------------------
+
+@app.route('/api/podologia/cancelar', methods=['POST'])
+def cancelar_agendamentop():
+    data = request.json.get('data')
+    contato = request.json.get('contato')
 
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
+        # 🔍 Verifica se existe
         cursor.execute("""
-            INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
+            SELECT id
+            FROM agendamentospodologa
+            WHERE data = %s AND contato = %s
+        """, (data, contato))
+
+        agendamento = cursor.fetchone()
+
+        if not agendamento:
+            return jsonify({
+                "status": "erro",
+                "mensagem": "Agendamento não encontrado"
+            }), 404
+
+        # ❌ Cancela
+        cursor.execute("""
+            DELETE FROM agendamentospodologa
+            WHERE data = %s AND contato = %s
+        """, (data, contato))
 
         conn.commit()
 
+        return jsonify({
+            "status": "ok",
+            "mensagem": "Agendamento cancelado com sucesso"
+        })
+
     except Exception as e:
-        print("ERRO:", e)
+        print("Erro:", e)
         return jsonify({
             "status": "erro",
-            "mensagem": "Erro ao salvar agendamento"
+            "mensagem": "Erro ao cancelar agendamento"
         }), 500
 
     finally:
         cursor.close()
         conn.close()
-
-    data_formatada = datetime.strptime(data, "%Y-%m-%d").strftime("%d/%m/%Y")
-
-    return jsonify({
-        "status": "ok",
-        "mensagem": "Agendamento confirmado",
-        "data": data_formatada,
-        "horario": horario,
-        "pagamento": pagamento
-    })
-
-
-@app.route('/api/manicure/horarios/<data>')
-def get_horarios_manicure(data):
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            SELECT horario
-            FROM agendamentosmanicure
-            WHERE data = %s
-        """, (data,))
-
-        horarios = cursor.fetchall()
-
-        return jsonify([
-            {"horario": h[0].strftime("%H:%M")}
-            for h in horarios
-        ])
-
-    except Exception as e:
-        print("ERRO COMPLETO:", repr(e))
-        return jsonify({
-            "erro": str(e),
-            "tipo": type(e).__name__
-        }), 500
-
-    finally:
-        cursor.close()
-        conn.close()
-
-
 # ======================================
 # MAIN
 # ======================================
