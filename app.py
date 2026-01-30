@@ -24,14 +24,15 @@ def get_db_connection():
         connect_timeout=5
     )
 
-@app.route("/test-db")
+@app.route("/api/test-db")
 def test_db():
     try:
         conn = get_db_connection()
         conn.close()
-        return "✅ Conectado ao PostgreSQL (Supabase) com sucesso!"
+        return jsonify({"status": "ok", "msg": "Banco conectado"})
     except Exception as e:
-        return f"❌ Erro ao conectar: {e}"
+        return jsonify({"status": "erro", "msg": str(e)}), 500
+
 
 
 
