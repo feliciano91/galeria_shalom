@@ -98,23 +98,19 @@ def agenda1manicure():
 @app.route('/api/manicure/horarios/<data>')
 def get_horarios_manicure(data):
     try:
-        conn = psycopg2.connect(
-            DATABASE_URL,
-            sslmode="require",
-            connect_timeout=5
-        )
+        conn = get_db_connection()
         cursor = conn.cursor()
 
         cursor.execute("""
             SELECT horario
             FROM agendamentosmanicure
-            WHERE data::text = %s
+            WHERE data = %s
         """, (data,))
 
         horarios = cursor.fetchall()
 
         return jsonify([
-            h[0] if isinstance(h[0], str) else h[0].strftime('%H:%M')
+            {"horario": h[0].strftime("%H:%M")}
             for h in horarios
         ])
 
@@ -126,11 +122,8 @@ def get_horarios_manicure(data):
         }), 500
 
     finally:
-        try:
-            cursor.close()
-            conn.close()
-        except:
-            pass
+        cursor.close()
+        conn.close()
 
 
 # ======================================
