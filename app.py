@@ -21,6 +21,9 @@ CORS(app, resources={
 # ======================================
 # BANCO
 # ======================================
+conn = psycopg2.connect(os.getenv("DATABASE_URL"))
+print("Conectado ao Supabase via Session Pooler!")
+conn.close()
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_db_connection():
