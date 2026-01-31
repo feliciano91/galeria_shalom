@@ -22,10 +22,15 @@ CORS(app, resources={
 
 # Configuração do banco
 # ----------------------
-DATABASE_URL = (
-    "postgresql://postgres.mawrehqblzcaujuakxqp:FSamdGS912026@aws-1-us-east-1.pooler.supabase.com:5432/postgres"
-)
+#DATABASE_URL = (
+   # "postgresql://postgres.mawrehqblzcaujuakxqp:FSamdGS912026@aws-1-us-east-1.pooler.supabase.com:5432/postgres"
+#)
+DATABASE_URL = os.environ.get("postgresql://postgres.mawrehqblzcaujuakxqp:FSamdGS912026@aws-1-us-east-1.pooler.supabase.com:5432/postgres")
 
+conn = psycopg2.connect(
+    DATABASE_URL,
+    sslmode="require"
+)
 
 
 def get_db_connection():
