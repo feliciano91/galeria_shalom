@@ -41,12 +41,6 @@ def gerar_horarios():
     return horarios
 
 
-
-@app.route('/')
-def index():
-    return render_template('home-page.html')
-
-
 @app.route('/api/test-db')
 def test_db():
     try:
@@ -65,11 +59,7 @@ def test_db():
             "erro": str(e)
         }, 500
 
-
-
-@app.route('/login', methods=['GET'])
-def login():
-    return render_template('login.html')  # Renderiza o formulário de login
+#-------------------------------------------------------------------------------
 
 @app.route('/login', methods=['POST'])
 def logar():
@@ -87,56 +77,6 @@ def logar():
         return render_template('confirmacao.html')  # Redireciona para a página agendada
     else:
         return render_template('login.html')
-
-@app.route('/profissionalpodologia')
-def profissionalpodologia():
-    return render_template('profissionalpodologia.html')
-
-@app.route('/podologia')
-def podologia():
-    return render_template('podologia.html')
-
-@app.route('/podologa')
-def podologa():
-    return render_template('podologa.html')
-
-@app.route('/esmalteria')
-def esmalteria():
-    return render_template('esmalteria.html')
-@app.route('/manicure')
-def manicure():
-    return render_template('manicure.html')
-
-@app.route('/confirmacao')
-def confirmacao():
-    return render_template('confirmacao.html')
-
-@app.route('/escolhernovohorario')
-def escolhernovohorario():
-    return render_template('escolhernovohorario.html')
-
-#===============================  MANICURE  ===============================================
-
-@app.route('/m1agendamento')
-def m1agendamento():
-    return render_template('agenda1manicure.html')
-
-@app.route('/m2agendamento')
-def m2agendamento():
-    return render_template('agenda2manicure.html')
-
-@app.route('/m3agendamento')
-def m3agendamento():
-    return render_template('agenda3manicure.html')
-
-@app.route('/m4agendamento')
-def m4agendamento():
-    return render_template('agenda4manicure.html')
-
-#@app.route('/m5agendamento')
-#def m5agendamento():
-#    return render_template('agenda5manicure.html')
-
 
 #========================== AGENDAMENTO PARA MANICURE====================================================
 @app.route('/agenda1manicure', methods=['POST'])
@@ -331,27 +271,6 @@ def agenda4manicure():
     return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
 
 
-
-#===============================  PODOLOGIA  ===============================================
-@app.route('/p1agendamento')
-def p1agendamento():
-    return render_template('agenda1podologia.html')
-
-@app.route('/p2agendamento')
-def p2agendamento():
-    return render_template('agenda2podologia.html')
-
-@app.route('/p3agendamento')
-def p3agendamento():
-    return render_template('agenda3podologia.html')
-
-@app.route('/p4agendamento')
-def p4agendamento():
-    return render_template('agenda4podologia.html')
-
-#@app.route('/p5agendamento')
-#def p5agendamento():
-#    return render_template('agenda5podologia.html')
 
 
 #============================ AGENDAMENTO PARA PODOLOGIA ==================================================
@@ -620,10 +539,6 @@ def get_horariop(data):
 
 
 #--------------------------------------- CANCELAR AGENDAMENTO---------------------------------------------------------------------
-@app.route('/confirma_cancelamento')
-def confirma_cancelamento():
-    return render_template('confirmacancelamento.html')
-
 
 @app.route('/cancelar_agendamentop', methods=['POST'])
 def cancelar_agendamentop():
