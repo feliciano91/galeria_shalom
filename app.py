@@ -44,6 +44,27 @@ def gerar_horarios():
 def index():
     return render_template('home-page.html')
 
+
+@app.route('/api/test-db')
+def test_db():
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT NOW();")
+        resultado = cur.fetchone()
+        cur.close()
+        return {
+            "status": "OK",
+            "mensagem": "Conectou no banco com sucesso",
+            "hora_banco": str(resultado[0])
+        }
+    except Exception as e:
+        return {
+            "status": "ERRO",
+            "erro": str(e)
+        }, 500
+
+
+
 @app.route('/login', methods=['GET'])
 def login():
     return render_template('login.html')  # Renderiza o formulário de login
