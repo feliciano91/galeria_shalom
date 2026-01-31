@@ -554,7 +554,7 @@ def agenda4podologia():
 def agendado():
     return render_template('agendado.html')
 
-@app.route('/get_horarios/<data>')
+@app.route('/api/get_horarios/<data>')
 def get_horarios(data):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -589,7 +589,7 @@ def get_horarios(data):
 def agendadopodologia():
     return render_template('agendadopodologia.html')
 
-@app.route('/get_horariop/<data>')
+@app.route('/api/get_horariop/<data>')
 def get_horariop(data):
     conn = get_db_connection()
     cursor = conn.cursor()
