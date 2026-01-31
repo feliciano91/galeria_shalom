@@ -8,6 +8,8 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import psycopg2
 from datetime import datetime, time
+from urllib.parse import urlencode
+from flask import redirect
 
 app = Flask(__name__)
 
@@ -47,14 +49,13 @@ def gerar_horarios():
 #========================== AGENDAMENTO PARA MANICURE====================================================
 @app.route('/agenda1manicure', methods=['POST'])
 def agenda1manicure():
-    # Pegando os dados do formulário
     nome = request.form['nome']
     contato = request.form['contato']
     data = request.form['data']
     horario = request.form['horario']
     pagamento = request.form['pagamento']
     servico = request.form['servico']
-    
+
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -69,18 +70,26 @@ def agenda1manicure():
 
     except Exception as e:
         print("Erro:", e)
-        return "Erro ao salvar agendamento"
+        return "Erro ao salvar agendamento", 500
 
     finally:
         cursor.close()
         conn.close()
 
-    # Converter a string da data para um objeto datetime
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
-    data_formatada = data_obj.strftime('%d-%m-%Y')
+    data_formatada = datetime.strptime(
+        data, "%Y-%m-%d"
+    ).strftime("%d/%m/%Y")
 
-    # Processando os dados e retornando a confirmação
-    return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
+    params = urlencode({
+        "data": data_formatada,
+        "horario": horario,
+        "pagamento": pagamento
+    })
+
+    return redirect(
+        f"https://www.galeriashalom.com.br/confirmacao.html?{params}"
+    )
+
 
 
 @app.route('/agenda2manicure', methods=['POST'])
