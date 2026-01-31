@@ -40,43 +40,9 @@ def gerar_horarios():
         horarios.append(time(h, 0))
     return horarios
 
+#-----------------------------------------------------
 
-@app.route('/api/test-db')
-def test_db():
-    try:
-        cur = conn.cursor()
-        cur.execute("SELECT NOW();")
-        resultado = cur.fetchone()
-        cur.close()
-        return {
-            "status": "OK",
-            "mensagem": "Conectou no banco com sucesso",
-            "hora_banco": str(resultado[0])
-        }
-    except Exception as e:
-        return {
-            "status": "ERRO",
-            "erro": str(e)
-        }, 500
 
-#-------------------------------------------------------------------------------
-
-@app.route('/login', methods=['POST'])
-def logar():
-    username = request.form['username']
-    password = request.form['password']
-    
-    # Exemplo de validação simples
-    if username == 'feliciano' and password == '123456':
-        return render_template('agendado.html')  # Redireciona para a página agendada
-    
-    elif username == 'amanda' and password == '123456':
-        return render_template('agendadopodologia.html')  # Redireciona para a página agendada
-    
-    elif username == 'silveria' and password == '123456':
-        return render_template('confirmacao.html')  # Redireciona para a página agendada
-    else:
-        return render_template('login.html')
 
 #========================== AGENDAMENTO PARA MANICURE====================================================
 @app.route('/agenda1manicure', methods=['POST'])
@@ -469,9 +435,6 @@ def agenda4podologia():
 
 #==========================================================================================================================
 #==========================================================================================================================
-@app.route('/agendado')
-def agendado():
-    return render_template('agendado.html')
 
 @app.route('/api/get_horarios/<data>')
 def get_horarios(data):
@@ -503,10 +466,7 @@ def get_horarios(data):
     return jsonify(lista_agendamentos)
 
 
-#---------------------------------------------------------------------------------------------------------------
-@app.route('/agendadopodologia')
-def agendadopodologia():
-    return render_template('agendadopodologia.html')
+#--------------------------------------------------------------------------------------------------------------
 
 @app.route('/api/get_horariop/<data>')
 def get_horariop(data):
