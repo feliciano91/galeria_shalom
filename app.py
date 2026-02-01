@@ -42,10 +42,6 @@ def gerar_horarios():
         horarios.append(time(h, 0))
     return horarios
 
-#-----------------------------------------------------
-
-
-
 #========================== AGENDAMENTO PARA MANICURE====================================================
 @app.route('/agenda1manicure', methods=['POST'])
 def agenda1manicure():
@@ -89,8 +85,6 @@ def agenda1manicure():
     return redirect(
         f"https://www.galeriashalom.com.br/confirmacao.html?{params}"
     )
-
-
 
 @app.route('/agenda2manicure', methods=['POST'])
 def agenda2manicure():
