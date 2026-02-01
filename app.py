@@ -134,13 +134,20 @@ def agenda2manicure():
         conn.close()
 
     # Converter a string da data para um objeto datetime
-    data_obj = datetime.strptime(data, '%Y-%m-%d')
-    data_formatada = data_obj.strftime('%d-%m-%Y')
+    data_formatada = datetime.strptime(
+        data, "%Y-%m-%d"
+    ).strftime("%d/%m/%Y")
 
-    # Processando os dados e retornando a confirmação
-    return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
+    params = urlencode({
+        "data": data_formatada,
+        "horario": horario,
+        "pagamento": pagamento
+    })
 
-
+    return redirect(
+        f"https://www.galeriashalom.com.br/confirmacao.html?{params}"
+    )
+    
 @app.route('/agenda3manicure', methods=['POST'])
 def agenda3manicure():
     nome = request.form['nome']
@@ -188,10 +195,19 @@ def agenda3manicure():
         cursor.close()
         conn.close()
 
-    data_formatada = datetime.strptime(data, '%Y-%m-%d').strftime('%d-%m-%Y')
+    data_formatada = datetime.strptime(
+        data, "%Y-%m-%d"
+    ).strftime("%d/%m/%Y")
 
-    return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
+    params = urlencode({
+        "data": data_formatada,
+        "horario": horario,
+        "pagamento": pagamento
+    })
 
+    return redirect(
+        f"https://www.galeriashalom.com.br/confirmacao.html?{params}"
+    )
 
 @app.route('/agenda4manicure', methods=['POST'])
 def agenda4manicure():
@@ -241,12 +257,19 @@ def agenda4manicure():
         cursor.close()
         conn.close()
 
-    data_formatada = datetime.strptime(data, '%Y-%m-%d').strftime('%d-%m-%Y')
+    data_formatada = datetime.strptime(
+        data, "%Y-%m-%d"
+    ).strftime("%d/%m/%Y")
 
-    return render_template('confirmacao.html', data=data_formatada, horario=horario, pagamento=pagamento)
+    params = urlencode({
+        "data": data_formatada,
+        "horario": horario,
+        "pagamento": pagamento
+    })
 
-
-
+    return redirect(
+        f"https://www.galeriashalom.com.br/confirmacao.html?{params}"
+    )
 
 #============================ AGENDAMENTO PARA PODOLOGIA ==================================================
 @app.route('/agenda1podologia', methods=['POST'])
