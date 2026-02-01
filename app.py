@@ -462,13 +462,13 @@ def agenda4podologia():
     data_formatada = datetime.strptime(
         data, "%Y-%m-%d"
     ).strftime("%d/%m/%Y")
-
+    
     params = urlencode({
         "data": data_formatada,
         "horario": horario,
         "pagamento": pagamento
     })
-
+    
     return redirect(
         f"https://www.galeriashalom.com.br/confirmacao1.html?{params}"
     )
