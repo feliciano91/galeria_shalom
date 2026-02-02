@@ -60,7 +60,7 @@ def logar():
         return redirect("https://www.galeriashalom.com.br/agendado.html")
 
     else:
-        return redirect('/login.html?erro=1')
+        return redirect("https://www.galeriashalom.com.br/login.html?erro=1")
 
 #========================== AGENDAMENTO PARA MANICURE====================================================
 @app.route('/agenda1manicure', methods=['POST'])
