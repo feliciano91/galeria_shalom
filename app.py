@@ -9,7 +9,7 @@ from flask_cors import CORS
 import psycopg2
 from datetime import datetime, time
 from urllib.parse import urlencode
-from flask import redirect
+
 
 app = Flask(__name__)
 
@@ -41,6 +41,26 @@ def gerar_horarios():
     for h in range(8, 18):  # 08:00 até 17:00
         horarios.append(time(h, 0))
     return horarios
+
+
+#========================== LOGIN ============================================
+
+@app.route('/login', methods=['POST'])
+def logar():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    if username == 'feliciano' and password == '123456':
+        return redirect('/agendado.html')
+
+    elif username == 'amanda' and password == '123456':
+        return redirect('/agendadopodologia.html')
+
+    elif username == 'silveria' and password == '123456':
+        return redirect('/confirmacao.html')
+
+    else:
+        return redirect('/login.html?erro=1')
 
 #========================== AGENDAMENTO PARA MANICURE====================================================
 @app.route('/agenda1manicure', methods=['POST'])
