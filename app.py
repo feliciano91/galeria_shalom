@@ -51,13 +51,13 @@ def logar():
     password = request.form.get('password')
 
     if username == 'feliciano' and password == '123456':
-        return redirect('/agendado.html')
-
+        return redirect("https://www.galeriashalom.com.br/agendado.html")
+        
     elif username == 'amanda' and password == '123456':
-        return redirect('/agendadopodologia.html')
+        return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
 
     elif username == 'silveria' and password == '123456':
-        return redirect('/confirmacao.html')
+        return redirect("https://www.galeriashalom.com.br/agendado.html")
 
     else:
         return redirect('/login.html?erro=1')
