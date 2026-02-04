@@ -43,6 +43,11 @@ def gerar_horarios():
     return horarios
 
 
+#========================== HEALTH ============================================
+@app.route("/health")
+def health():
+    return "ok", 200
+
 #========================== LOGIN ============================================
 
 @app.route('/login', methods=['POST'])
