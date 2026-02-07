@@ -587,34 +587,21 @@ def cancelar_agendamentop():
     data = request.form['data']
     contato = request.form['contato']
 
-    cursor = None
-    conn = None
-
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # 🔍 Verifica se existe
-        cursor.execute("""
-            SELECT id
-            FROM agendamentospodologa
-            WHERE data = %s AND contato = %s
-        """, (data, contato))
-
-        agendamento = cursor.fetchone()
-
-        if not agendamento:
-            flash("❌ Agendamento não encontrado.", "erro")
-            return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
-
-        # ❌ Cancela
         cursor.execute("""
             DELETE FROM agendamentospodologa
             WHERE data = %s AND contato = %s
         """, (data, contato))
 
         conn.commit()
-        flash("✅ Agendamento cancelado com sucesso!", "sucesso")
+
+        if cursor.rowcount == 0:
+            flash("❌ Agendamento não encontrado.", "erro")
+        else:
+            flash("✅ Agendamento cancelado com sucesso!", "sucesso")
 
     except Exception as e:
         print("Erro:", e)
@@ -625,8 +612,8 @@ def cancelar_agendamentop():
             cursor.close()
         if conn:
             conn.close()
-    return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
 
+    return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
 
 #==========================================================================================================================
 #==========================================================================================================================
