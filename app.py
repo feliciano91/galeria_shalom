@@ -584,13 +584,22 @@ def get_horariop(data):
 
 @app.route('/cancelar_agendamentop', methods=['POST'])
 def cancelar_agendamentop():
-    data = request.form['data']
-    contato = request.form['contato']
+    data = request.form.get('data')
+    contato = request.form.get('contato')
+
+    # 🔐 Validação básica do formulário
+    if not data or not contato:
+        flash("❌ Dados inválidos para cancelamento.", "erro")
+        return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
+
+    cursor = None
+    conn = None
 
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
 
+        # ❌ Cancela direto (mais rápido)
         cursor.execute("""
             DELETE FROM agendamentospodologa
             WHERE data = %s AND contato = %s
@@ -614,6 +623,7 @@ def cancelar_agendamentop():
             conn.close()
 
     return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
+
 
 #==========================================================================================================================
 #==========================================================================================================================
