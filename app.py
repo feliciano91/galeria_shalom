@@ -582,18 +582,11 @@ def get_horariop(data):
 
 #--------------------------------------- CANCELAR AGENDAMENTO---------------------------------------------------------------------
 
+
 @app.route('/cancelar_agendamentop', methods=['POST'])
 def cancelar_agendamentop():
-    data = request.form.get('data')
-    contato = request.form.get('contato')
-
-    print("DATA:", data)
-    print("CONTATO:", contato)
-
-    # 🔐 Validação básica do formulário
-    if not data or not contato:
-        flash("❌ Dados inválidos para cancelamento.", "erro")
-        return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
+    data = request.form['data']
+    contato = request.form['contato']
 
     cursor = None
     conn = None
@@ -602,18 +595,27 @@ def cancelar_agendamentop():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # ❌ Cancela direto (mais rápido)
+        # 🔍 Verifica se existe
+        cursor.execute("""
+            SELECT id
+            FROM agendamentospodologa
+            WHERE data = %s AND contato = %s
+        """, (data, contato))
+
+        agendamento = cursor.fetchone()
+
+        if not agendamento:
+            flash("❌ Agendamento não encontrado.", "erro")
+            return redirect(f"https://www.galeriashalom.com.br/agendadopodologia.html")
+
+        # ❌ Cancela
         cursor.execute("""
             DELETE FROM agendamentospodologa
             WHERE data = %s AND contato = %s
         """, (data, contato))
 
         conn.commit()
-
-        if cursor.rowcount == 0:
-            flash("❌ Agendamento não encontrado.", "erro")
-        else:
-            flash("✅ Agendamento cancelado com sucesso!", "sucesso")
+        flash("✅ Agendamento cancelado com sucesso!", "sucesso")
 
     except Exception as e:
         print("Erro:", e)
@@ -624,8 +626,9 @@ def cancelar_agendamentop():
             cursor.close()
         if conn:
             conn.close()
-
-    return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
+            
+    return redirect(f"https://www.galeriashalom.com.br/confirmacancelamento.html")
+    #return redirect(f"https://www.galeriashalom.com.br/agendadopodologia.html")
 
 
 #==========================================================================================================================
