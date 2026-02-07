@@ -587,6 +587,9 @@ def cancelar_agendamentop():
     data = request.form.get('data')
     contato = request.form.get('contato')
 
+    print("DATA:", data)
+    print("CONTATO:", contato)
+
     # 🔐 Validação básica do formulário
     if not data or not contato:
         flash("❌ Dados inválidos para cancelamento.", "erro")
