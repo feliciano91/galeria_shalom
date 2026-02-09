@@ -30,18 +30,8 @@ conn = psycopg2.connect(
     sslmode="require"
 )
 
-
-
 def get_db_connection():
     return psycopg2.connect(DATABASE_URL)
-
-# ✅ A FUNÇÃO FICA AQUI (FORA DAS ROTAS)
-def gerar_horarios():
-    horarios = []
-    for h in range(8, 18):  # 08:00 até 17:00
-        horarios.append(time(h, 0))
-    return horarios
-
 
 #========================== HEALTH ============================================
 @app.route("/health")
@@ -557,7 +547,7 @@ def get_horariop(data):
 
     cursor.execute("""
         SELECT nome, contato, horario, pagamento, servico
-        FROM agendamentospodologa
+        FROM public.agendamentospodologa
         WHERE DATE(data) = %s
     """, (data,))
 
