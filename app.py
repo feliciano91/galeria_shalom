@@ -515,7 +515,7 @@ def get_horarios(data):
 
     cursor.execute("""
         SELECT nome, contato, horario, pagamento, servico
-        FROM agendamentosmanicure
+        FROM public.agendamentosmanicure
         WHERE DATE(data) = %s
     """, (data,))
 
@@ -547,9 +547,10 @@ def get_horariop(data):
 
     cursor.execute("""
         SELECT nome, contato, horario, pagamento, servico
-        FROM agendamentospodologa
-        WHERE DATE(data) = %s
+        FROM public.agendamentospodologa
+        WHERE data = %s
     """, (data,))
+
 
     agendamentos = cursor.fetchall()
 
