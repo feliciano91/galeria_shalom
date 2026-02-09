@@ -547,7 +547,7 @@ def get_horariop(data):
 
     cursor.execute("""
         SELECT nome, contato, horario, pagamento, servico
-        FROM public.agendamentospodologa
+        FROM agendamentospodologa
         WHERE DATE(data) = %s
     """, (data,))
 
