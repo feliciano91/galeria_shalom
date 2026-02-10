@@ -574,7 +574,7 @@ def get_horariop(data):
 #--------------------------------------- CANCELAR AGENDAMENTO---------------------------------------------------------------------
 
 
-@app.route('/api/cancelar_agendamentop', methods=['POST'])
+@app.route('/cancelar_agendamentop', methods=['POST'])
 def cancelar_agendamentop():
     data = request.form['data']
     contato = request.form['contato']
@@ -607,6 +607,7 @@ def cancelar_agendamentop():
 
         conn.commit()
         flash("✅ Agendamento cancelado com sucesso!", "sucesso")
+        return redirect(f"https://www.galeriashalom.com.br/agendadopodologia.html")
 
     except Exception as e:
         print("Erro:", e)
@@ -618,8 +619,7 @@ def cancelar_agendamentop():
         if conn:
             conn.close()
             
-    return redirect(f"https://www.galeriashalom.com.br/confirmacancelamento.html")
-    #return redirect(f"https://www.galeriashalom.com.br/agendadopodologia.html")
+    return redirect(f"https://www.galeriashalom.com.br/agendadopodologia.html")
 
 
 #==========================================================================================================================
