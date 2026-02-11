@@ -572,6 +572,52 @@ def get_horariop(data):
 
 
 #--------------------------------------- CANCELAR AGENDAMENTO---------------------------------------------------------------------
+@app.route('/cancelar_agendamento', methods=['POST'])
+def cancelar_agendamento():
+    data = request.form['data']
+    contato = request.form['contato']
+
+    cursor = None
+    conn = None
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # 🔍 Verifica se existe
+        cursor.execute("""
+            SELECT id
+            FROM agendamentosmanicure
+            WHERE data = %s AND contato = %s
+        """, (data, contato))
+
+        agendamento = cursor.fetchone()
+
+        if not agendamento:
+            flash("❌ Agendamento não encontrado.", "erro")
+            return redirect(f"https://www.galeriashalom.com.br/agendado.html")
+
+        # ❌ Cancela
+        cursor.execute("""
+            DELETE FROM agendamentosmanicure
+            WHERE data = %s AND contato = %s
+        """, (data, contato))
+
+        conn.commit()
+        flash("✅ Agendamento cancelado com sucesso!", "sucesso")
+
+    except Exception as e:
+        print("Erro:", e)
+        flash("❌ Erro ao cancelar agendamento.", "erro")
+
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+            
+    return redirect(f"https://www.galeriashalom.com.br/confirmacancelamento.html")
+
 
 
 @app.route('/cancelar_agendamentop', methods=['POST'])
