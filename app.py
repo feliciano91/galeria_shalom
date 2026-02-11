@@ -607,7 +607,6 @@ def cancelar_agendamentop():
 
         conn.commit()
         flash("✅ Agendamento cancelado com sucesso!", "sucesso")
-        return redirect(f"https://www.galeriashalom.com.br/agendadopodologia.html")
 
     except Exception as e:
         print("Erro:", e)
@@ -619,7 +618,7 @@ def cancelar_agendamentop():
         if conn:
             conn.close()
             
-    return redirect(f"https://www.galeriashalom.com.br/agendadopodologia.html")
+    return redirect(f"https://www.galeriashalom.com.br/confirmacancelamento.html")
 
 
 #==========================================================================================================================
