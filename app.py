@@ -632,7 +632,6 @@ def cancelar_agendamentop():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # 🔍 Verifica se existe
         cursor.execute("""
             SELECT id
             FROM agendamentospodologa
@@ -641,39 +640,25 @@ def cancelar_agendamentop():
 
         agendamento = cursor.fetchone()
 
-        if not agendamento:
-            flash("❌ Agendamento não encontrado.", "erro")
-            return """
-            <script>
-                window.location.href = "https://www.galeriashalom.com.br/agendadopodologia.html";
-            </script>
-            """
+        if agendamento:
+            cursor.execute("""
+                DELETE FROM agendamentospodologa
+                WHERE data = %s AND contato = %s
+            """, (data, contato))
 
-
-
-        # ❌ Cancela
-        cursor.execute("""
-            DELETE FROM agendamentospodologa
-            WHERE data = %s AND contato = %s
-        """, (data, contato))
-
-        conn.commit()
-        flash("✅ Agendamento cancelado com sucesso!", "sucesso")
+            conn.commit()
 
     except Exception as e:
         print("Erro:", e)
-        flash("❌ Erro ao cancelar agendamento.", "erro")
 
     finally:
         if cursor:
             cursor.close()
         if conn:
             conn.close()
-    return """
-    <script>
-        window.location.href = "https://www.galeriashalom.com.br/agendadopodologia.html";
-    </script>
-    """
+
+    return redirect("https://www.galeriashalom.com.br/agendadopodologia.html", code=303)
+
 
 
 #==========================================================================================================================
