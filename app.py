@@ -643,7 +643,8 @@ def cancelar_agendamentop():
 
         if not agendamento:
             flash("❌ Agendamento não encontrado.", "erro")
-            return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
+            return redirect("https://www.galeriashalom.com.br/agendadopodologia.html", code=303)
+
 
         # ❌ Cancela
         cursor.execute("""
@@ -663,8 +664,7 @@ def cancelar_agendamentop():
             cursor.close()
         if conn:
             conn.close()
-            
-    return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
+    return redirect("https://www.galeriashalom.com.br/agendadopodologia.html", code=303)
 
 #==========================================================================================================================
 #==========================================================================================================================
