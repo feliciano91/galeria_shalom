@@ -584,7 +584,6 @@ def cancelar_agendamento():
         conn = get_db_connection()
         cursor = conn.cursor()
 
-        # 🔍 Verifica se existe
         cursor.execute("""
             SELECT id
             FROM agendamentosmanicure
@@ -593,33 +592,26 @@ def cancelar_agendamento():
 
         agendamento = cursor.fetchone()
 
-        if not agendamento:
-            flash("❌ Agendamento não encontrado.", "erro")
-            return redirect("https://www.galeriashalom.com.br/agendado.html")
+        if agendamento:
+            cursor.execute("""
+                DELETE FROM agendamentosmanicure
+                WHERE data = %s AND contato = %s
+            """, (data, contato))
 
-        # ❌ Cancela
-        cursor.execute("""
-            DELETE FROM agendamentosmanicure
-            WHERE data = %s AND contato = %s
-        """, (data, contato))
-
-        conn.commit()
-        flash("✅ Agendamento cancelado com sucesso!", "sucesso")
+            conn.commit()
 
     except Exception as e:
         print("Erro:", e)
-        flash("❌ Erro ao cancelar agendamento.", "erro")
 
     finally:
         if cursor:
             cursor.close()
         if conn:
             conn.close()
-            
-    return redirect("https://www.galeriashalom.com.br/agendado.html")
 
+    return redirect("https://www.galeriashalom.com.br/agendadopodologia.html", code=303)
 
-
+#--------------------------------------------------------------------------------------------------------------------------------------------
 @app.route('/cancelar_agendamentop', methods=['POST'])
 def cancelar_agendamentop():
     data = request.form['data']
