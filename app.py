@@ -45,15 +45,17 @@ def logar():
     username = request.form.get('username')
     password = request.form.get('password')
 
-    if username == 'feliciano' and password == '123456':
+    if username == 'feliciano' and password == 'teste1':
         return redirect("https://www.galeriashalom.com.br/agendado.html")
-        
-    elif username == 'amanda' and password == '123456':
+
+    elif username == 'feliciano' and password == 'teste2':
         return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
 
-    elif username == 'silveria' and password == '123456':
+    elif username == 'yasmin' and password == '102030':
         return redirect("https://www.galeriashalom.com.br/agendado.html")
 
+    elif username == 'amanda' and password == '101112':
+        return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
     else:
         return redirect("https://www.galeriashalom.com.br/login.html?erro=1")
 
