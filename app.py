@@ -38,6 +38,26 @@ def get_db_connection():
 def health():
     return "ok", 200
 
+
+
+
+
+@app.route("/test-db")
+def test_db():
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT NOW();")
+        resultado = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        return f"Banco conectado! Hora do servidor: {resultado}"
+
+    except Exception as e:
+        return f"Erro na conexão: {e}"
 #========================== LOGIN ============================================
 
 @app.route('/login', methods=['POST'])
