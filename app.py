@@ -54,10 +54,10 @@ def test_db():
         cursor.close()
         conn.close()
 
-        return f"Banco conectado! Hora do servidor: {resultado}"
+        return f"Banco conectado! {resultado}"
 
     except Exception as e:
-        return f"Erro na conexão: {e}"
+        return f"Erro: {e}"
 #========================== LOGIN ============================================
 
 @app.route('/login', methods=['POST'])
