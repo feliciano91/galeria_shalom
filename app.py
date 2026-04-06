@@ -60,24 +60,29 @@ def test_db():
         return f"Erro: {e}"
 #========================== LOGIN ============================================
 
+usuarios = {
+    "feliciano": {
+        "teste1": "https://www.galeriashalom.com.br/agendado.html",
+        "teste2": "https://www.galeriashalom.com.br/agendadopodologia.html"
+    },
+    "yasmin": {
+        "102030": "https://www.galeriashalom.com.br/agendado.html"
+    },
+    "amanda": {
+        "101112": "https://www.galeriashalom.com.br/agendadopodologia.html"
+    }
+}
+
 @app.route('/login', methods=['POST'])
 def logar():
     username = request.form.get('username')
     password = request.form.get('password')
 
-    if username == 'feliciano' and password == 'teste1':
-        return redirect("https://www.galeriashalom.com.br/agendado.html")
+    if username in usuarios:
+        if password in usuarios[username]:
+            return redirect(usuarios[username][password])
 
-    elif username == 'feliciano' and password == 'teste2':
-        return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
-
-    elif username == 'yasmin' and password == '102030':
-        return redirect("https://www.galeriashalom.com.br/agendado.html")
-
-    elif username == 'amanda' and password == '101112':
-        return redirect("https://www.galeriashalom.com.br/agendadopodologia.html")
-    else:
-        return redirect("https://www.galeriashalom.com.br/login.html?erro=1")
+    return redirect("https://www.galeriashalom.com.br/login.html?erro=1")
 
 #========================== AGENDAMENTO PARA MANICURE====================================================
 @app.route('/agenda1manicure', methods=['POST'])
