@@ -680,6 +680,39 @@ def cancelar_agendamentop():
 
 
 
+
+
+@app.route('/api/excluir_agendamento', methods=['POST'])
+def excluir_agendamento():
+    dados = request.get_json()
+
+    data = dados.get('data')
+    contato = dados.get('contato')
+    horario = dados.get('horario')
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute("""
+            DELETE FROM agendamentosmanicure
+            WHERE DATE(data) = %s
+            AND contato = %s
+            AND horario = %s
+        """, (data, contato, horario))
+
+        conn.commit()
+
+        return jsonify({"status": "ok"})
+
+    except Exception as e:
+        print("ERRO:", e)
+        return jsonify({"erro": str(e)}), 500
+
+    finally:
+        cursor.close()
+        conn.close()
+
 #==========================================================================================================================
 #==========================================================================================================================
 
