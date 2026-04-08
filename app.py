@@ -639,7 +639,7 @@ def cancelar_agendamento():
     return redirect("https://www.galeriashalom.com.br/agendadopodologia.html", code=303)
 
 #--------------------------------------------------------------------------------------------------------------------------------------------
-@app.route('/cancelar_agendamentop', methods=['POST'])
+@app.route('/api/cancelar_agendamentop', methods=['POST'])
 def cancelar_agendamentop():
     data = request.form['data']
     contato = request.form['contato']
