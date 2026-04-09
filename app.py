@@ -608,44 +608,31 @@ def get_horariop(data):
 
 
 #--------------------------------------- CANCELAR AGENDAMENTO---------------------------------------------------------------------
-@app.route('/cancelar_agendamento', methods=['POST'])
-def cancelar_agendamento():
-    data = request.form['data']
-    contato = request.form['contato']
 
-    cursor = None
-    conn = None
+@app.route('/api/excluir_agendamento', methods=['POST'])
+def excluir_agendamento():
+    dados = request.get_json()
+    grupo_id = dados.get('grupo_id')
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
         cursor.execute("""
-            SELECT id
-            FROM agendamentosmanicure
-            WHERE data = %s AND contato = %s
-        """, (data, contato))
+            DELETE FROM agendamentosmanicure
+            WHERE grupo_id = %s
+        """, (grupo_id,))
 
-        agendamento = cursor.fetchone()
+        conn.commit()
 
-        if agendamento:
-            cursor.execute("""
-                DELETE FROM agendamentosmanicure
-                WHERE data = %s AND contato = %s
-            """, (data, contato))
-
-            conn.commit()
+        return jsonify({"status": "ok"})
 
     except Exception as e:
-        print("Erro:", e)
+        return jsonify({"erro": str(e)}), 500
 
     finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
-
-    return redirect("https://www.galeriashalom.com.br/agendadopodologia.html", code=303)
+        cursor.close()
+        conn.close()
 
 #--------------------------------------------------------------------------------------------------------------------------------------------
 
