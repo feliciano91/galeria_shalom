@@ -696,7 +696,8 @@ def excluir_agendamentop():
     try:
         # 🔥 converte horário
         hora_inicio = datetime.strptime(horario, "%H:%M")
-        hora_fim = hora_inicio + timedelta(minutes=60)  # ajusta se quiser
+        #hora_fim = hora_inicio + timedelta(minutes=60)  # ajusta se quiser
+        hora_fim = hora_inicio + timedelta(minutes=240)
 
         hora_inicio_str = hora_inicio.strftime("%H:%M:%S")
         hora_fim_str = hora_fim.strftime("%H:%M:%S")
