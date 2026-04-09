@@ -85,6 +85,15 @@ def logar():
 
     return redirect("https://www.galeriashalom.com.br/login.html?erro=1")
 
+#==========================================================================================================
+@app.route('/confirmacao')
+def confirmacao():
+    data = request.args.get('data')
+    horario = request.args.get('horario')
+    pagamento = request.args.get('pagamento')
+
+    return redirect(f"/confirmacao?data={data}&horario={horario}&pagamento={pagamento}")
+
 #========================== AGENDAMENTO PARA MANICURE====================================================
 @app.route('/agenda1manicure', methods=['POST'])
 def agenda1manicure():
