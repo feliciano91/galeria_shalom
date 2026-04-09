@@ -584,7 +584,7 @@ def get_horariop(data):
 
     lista_agendamentosp = []
 
-    for nome, contato, horario, pagamento, servico in agendamentos:
+    for nome, contato, horario, pagamento, servico, grupo_id in agendamentos:
         lista_agendamentosp.append({
             "nome": nome,
             "contato": contato,
