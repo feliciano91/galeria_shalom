@@ -88,6 +88,7 @@ def logar():
 #========================== AGENDAMENTO PARA MANICURE====================================================
 @app.route('/agenda1manicure', methods=['POST'])
 def agenda1manicure():
+    grupo_id = str(uuid.uuid4())
     nome = request.form['nome']
     contato = request.form['contato']
     data = request.form['data']
@@ -101,9 +102,9 @@ def agenda1manicure():
 
         cursor.execute("""
             INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario, pagamento, servico, grupo_id))
 
         conn.commit()
 
@@ -131,7 +132,7 @@ def agenda1manicure():
 
 @app.route('/agenda2manicure', methods=['POST'])
 def agenda2manicure():
-    # Pegando os dados do formulário
+    grupo_id = str(uuid.uuid4())
     nome = request.form['nome']
     contato = request.form['contato']
     data = request.form['data']
@@ -150,15 +151,15 @@ def agenda2manicure():
 
         cursor.execute("""
             INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario, pagamento, servico, grupo_id))
 
         cursor.execute("""
             INSERT INTO agendamentosmanicure
             (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático"))
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático", grupo_id))
 
         conn.commit()
 
@@ -187,6 +188,7 @@ def agenda2manicure():
     
 @app.route('/agenda3manicure', methods=['POST'])
 def agenda3manicure():
+    grupo_id = str(uuid.uuid4())
     nome = request.form['nome']
     contato = request.form['contato']
     data = request.form['data']
@@ -201,9 +203,9 @@ def agenda3manicure():
         # 🔹 1. INSERE O AGENDAMENTO PRINCIPAL
         cursor.execute("""
             INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario, pagamento, servico, grupo_id))
 
         # 🔹 2. BLOQUEIA 08:30 E 09:00
         hora_base = datetime.strptime(horario, "%H:%M")
@@ -218,9 +220,9 @@ def agenda3manicure():
 
             cursor.execute("""
             INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático"))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático", grupo_id))
 
         conn.commit()
 
@@ -248,6 +250,7 @@ def agenda3manicure():
 
 @app.route('/agenda4manicure', methods=['POST'])
 def agenda4manicure():
+    grupo_id = str(uuid.uuid4())
     nome = request.form['nome']
     contato = request.form['contato']
     data = request.form['data']
@@ -262,9 +265,9 @@ def agenda4manicure():
         # 🔹 1. INSERE O AGENDAMENTO PRINCIPAL
         cursor.execute("""
             INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario, pagamento, servico, grupo_id))
 
         # 🔹 2. BLOQUEIA 08:30 E 09:00
         hora_base = datetime.strptime(horario, "%H:%M")
@@ -280,9 +283,9 @@ def agenda4manicure():
 
             cursor.execute("""
             INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático"))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático", grupo_id))
 
         conn.commit()
 
