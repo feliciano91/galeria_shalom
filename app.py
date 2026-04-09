@@ -549,22 +549,24 @@ def get_horarios(data):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT nome, contato, horario, pagamento, servico
+        SELECT nome, contato, horario, pagamento, servico, grupo_id
         FROM agendamentosmanicure
-        WHERE DATE(data) = %s
+        WHERE data = %s
     """, (data,))
 
-    agendamentos = cursor.fetchall()
+
+    agendamento = cursor.fetchall()
 
     lista_agendamentos = []
 
-    for nome, contato, horario, pagamento, servico in agendamentos:
+    for nome, contato, horario, pagamento, servico, grupo_id in agendamento:
         lista_agendamentos.append({
             "nome": nome,
             "contato": contato,
             "horario": horario.strftime('%H:%M'),  # 🔥 SIMPLES
             "pagamento": pagamento,
-            "servico": servico
+            "servico": servico,
+            "grupo_id": grupo_id
         })
 
     cursor.close()
