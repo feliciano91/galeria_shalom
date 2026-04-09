@@ -682,8 +682,8 @@ def cancelar_agendamentop():
 
 
 
-@app.route('/api/excluir_agendamento', methods=['POST'])
-def excluir_agendamento():
+@app.route('/api/excluir_agendamentop', methods=['POST'])
+def excluir_agendamentop():
     dados = request.get_json()
 
     data = dados.get('data')
@@ -694,12 +694,21 @@ def excluir_agendamento():
     cursor = conn.cursor()
 
     try:
+        # 🔥 converte horário
+        hora_inicio = datetime.strptime(horario, "%H:%M")
+        hora_fim = hora_inicio + timedelta(minutes=60)  # ajusta se quiser
+
+        hora_inicio_str = hora_inicio.strftime("%H:%M:%S")
+        hora_fim_str = hora_fim.strftime("%H:%M:%S")
+
+        # 🔥 deleta intervalo (principal + bloqueados)
         cursor.execute("""
-            DELETE FROM agendamentosmanicure
+            DELETE FROM agendamentospodologa
             WHERE DATE(data) = %s
             AND contato = %s
-            AND horario = %s
-        """, (data, contato, horario))
+            AND TIME(horario) >= %s
+            AND TIME(horario) < %s
+        """, (data, contato, hora_inicio_str, hora_fim_str))
 
         conn.commit()
 
@@ -712,7 +721,6 @@ def excluir_agendamento():
     finally:
         cursor.close()
         conn.close()
-
 #==========================================================================================================================
 #==========================================================================================================================
 
