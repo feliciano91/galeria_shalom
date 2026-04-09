@@ -4,13 +4,14 @@ from flask import request, redirect, url_for, flash
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy import create_engine, Column, Integer, String, Date, Time
 import os
+import uuid
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import psycopg2
 from datetime import datetime, time
 from urllib.parse import urlencode
 
-
+grupo_id = str(uuid.uuid4())
 app = Flask(__name__)
 
 CORS(app, resources={
@@ -323,9 +324,9 @@ def agenda1podologia():
 
         cursor.execute("""
             INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario, pagamento, servico, grupo_id))
 
         conn.commit()
 
@@ -372,15 +373,15 @@ def agenda2podologia():
 
         cursor.execute("""
             INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario, pagamento, servico, grupo_id))
 
         cursor.execute("""
             INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático"))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático", grupo_id))
 
         conn.commit()
 
@@ -573,7 +574,7 @@ def get_horariop(data):
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT nome, contato, horario, pagamento, servico
+        SELECT nome, contato, horario, pagamento, servico, grupo_id
         FROM agendamentospodologa
         WHERE data = %s
     """, (data,))
@@ -685,38 +686,22 @@ def cancelar_agendamentop():
 @app.route('/api/excluir_agendamentop', methods=['POST'])
 def excluir_agendamentop():
     dados = request.get_json()
-
-    data = dados.get('data')
-    contato = dados.get('contato')
-    horario = dados.get('horario')
+    grupo_id = dados.get('grupo_id')
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
-        # 🔥 converte horário
-        hora_inicio = datetime.strptime(horario, "%H:%M")
-        #hora_fim = hora_inicio + timedelta(minutes=60)  # ajusta se quiser
-        hora_fim = hora_inicio + timedelta(minutes=240)
-
-        hora_inicio_str = hora_inicio.strftime("%H:%M:%S")
-        hora_fim_str = hora_fim.strftime("%H:%M:%S")
-
-        # 🔥 deleta intervalo (principal + bloqueados)
         cursor.execute("""
             DELETE FROM agendamentospodologa
-            WHERE DATE(data) = %s
-            AND contato = %s
-            AND horario >= %s
-            AND horario < %s
-        """, (data, contato, hora_inicio_str, hora_fim_str))
+            WHERE grupo_id = %s
+        """, (grupo_id,))
 
         conn.commit()
 
         return jsonify({"status": "ok"})
 
     except Exception as e:
-        print("ERRO:", e)
         return jsonify({"erro": str(e)}), 500
 
     finally:
