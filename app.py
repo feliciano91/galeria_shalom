@@ -92,7 +92,7 @@ def confirmacao():
     horario = request.args.get('horario')
     pagamento = request.args.get('pagamento')
 
-    return redirect(f"/confirmacao?data={data}&horario={horario}&pagamento={pagamento}")
+    return redirect(f"https://www.galeriashalom.com.br/confirmacao?data={data}&horario={horario}&pagamento={pagamento}")
 
 #========================== AGENDAMENTO PARA MANICURE====================================================
 @app.route('/agenda1manicure', methods=['POST'])
