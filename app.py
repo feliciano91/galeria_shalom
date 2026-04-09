@@ -412,6 +412,7 @@ def agenda2podologia():
     
 @app.route('/agenda3podologia', methods=['POST'])
 def agenda3podologia():
+    grupo_id = str(uuid.uuid4())
     nome = request.form['nome']
     contato = request.form['contato']
     data = request.form['data']
@@ -426,9 +427,9 @@ def agenda3podologia():
         # 🔹 1. INSERE O AGENDAMENTO PRINCIPAL
         cursor.execute("""
             INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario, pagamento, servico, grupo_id))
 
         # 🔹 2. BLOQUEIA 08:30 E 09:00
         hora_base = datetime.strptime(horario, "%H:%M")
@@ -443,9 +444,9 @@ def agenda3podologia():
 
             cursor.execute("""
             INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático"))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático", grupo_id))
 
         conn.commit()
 
@@ -474,6 +475,7 @@ def agenda3podologia():
     
 @app.route('/agenda4podologia', methods=['POST'])
 def agenda4podologia():
+    grupo_id = str(uuid.uuid4())
     nome = request.form['nome']
     contato = request.form['contato']
     data = request.form['data']
@@ -488,9 +490,9 @@ def agenda4podologia():
         # 🔹 1. INSERE O AGENDAMENTO PRINCIPAL
         cursor.execute("""
             INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario, pagamento, servico))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario, pagamento, servico, grupo_id))
 
         # 🔹 2. BLOQUEIA 08:30 E 09:00
         hora_base = datetime.strptime(horario, "%H:%M")
@@ -506,9 +508,9 @@ def agenda4podologia():
 
             cursor.execute("""
             INSERT INTO agendamentospodologa
-            (nome, contato, data, horario, pagamento, servico)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático"))
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático", grupo_id))
 
         conn.commit()
 
@@ -643,48 +645,6 @@ def cancelar_agendamento():
     return redirect("https://www.galeriashalom.com.br/agendadopodologia.html", code=303)
 
 #--------------------------------------------------------------------------------------------------------------------------------------------
-@app.route('/api/cancelar_agendamentop', methods=['POST'])
-def cancelar_agendamentop():
-    data = request.form['data']
-    contato = request.form['contato']
-
-    cursor = None
-    conn = None
-
-    try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            SELECT id
-            FROM agendamentospodologa
-            WHERE data = %s AND contato = %s
-        """, (data, contato))
-
-        agendamento = cursor.fetchone()
-
-        if agendamento:
-            cursor.execute("""
-                DELETE FROM agendamentospodologa
-                WHERE data = %s AND contato = %s
-            """, (data, contato))
-
-            conn.commit()
-
-    except Exception as e:
-        print("Erro:", e)
-
-    finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
-
-    return redirect("https://www.galeriashalom.com.br/agendadopodologia.html", code=303)
-
-
-
-
 
 @app.route('/api/excluir_agendamentop', methods=['POST'])
 def excluir_agendamentop():
