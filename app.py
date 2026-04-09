@@ -543,8 +543,8 @@ def agenda4podologia():
 #==========================================================================================================================
 #==========================================================================================================================
 
-@app.route('/api/get_horarios/<data>')
-def get_horarios(data):
+@app.route('/api/get_horariop/<data>')
+def get_horariop(data):
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -555,11 +555,11 @@ def get_horarios(data):
     """, (data,))
 
 
-    agendamento = cursor.fetchall()
+    agendamentos = cursor.fetchall()
 
     lista_agendamentos = []
 
-    for nome, contato, horario, pagamento, servico, grupo_id in agendamento:
+    for nome, contato, horario, pagamento, servico, grupo_id in agendamentos:
         lista_agendamentos.append({
             "nome": nome,
             "contato": contato,
