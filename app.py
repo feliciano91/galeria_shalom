@@ -591,6 +591,7 @@ def get_horariop(data):
             "horario": horario.strftime('%H:%M'),  # 🔥 SIMPLES
             "pagamento": pagamento,
             "servico": servico
+            "grupo_id": grupo_id
         })
 
     cursor.close()
