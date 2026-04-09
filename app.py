@@ -543,8 +543,8 @@ def agenda4podologia():
 #==========================================================================================================================
 #==========================================================================================================================
 
-@app.route('/api/get_horariop/<data>')
-def get_horariop(data):
+@app.route('/api/get_horarios/<data>')
+def get_horarios(data):
     conn = get_db_connection()
     cursor = conn.cursor()
 
