@@ -311,6 +311,7 @@ def agenda4manicure():
 #============================ AGENDAMENTO PARA PODOLOGIA ==================================================
 @app.route('/agenda1podologia', methods=['POST'])
 def agenda1podologia():
+    grupo_id = str(uuid.uuid4())
     nome = request.form['nome']
     contato = request.form['contato']
     data = request.form['data']
@@ -354,6 +355,7 @@ def agenda1podologia():
 
 @app.route('/agenda2podologia', methods=['POST'])
 def agenda2podologia():
+    grupo_id = str(uuid.uuid4())
     # Pegando os dados do formulário
     nome = request.form['nome']
     contato = request.form['contato']
