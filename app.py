@@ -706,8 +706,8 @@ def excluir_agendamentop():
             DELETE FROM agendamentospodologa
             WHERE DATE(data) = %s
             AND contato = %s
-            AND TIME(horario) >= %s
-            AND TIME(horario) < %s
+            AND horario >= %s
+            AND horario < %s
         """, (data, contato, hora_inicio_str, hora_fim_str))
 
         conn.commit()
