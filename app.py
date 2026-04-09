@@ -157,7 +157,7 @@ def agenda2manicure():
 
         cursor.execute("""
             INSERT INTO agendamentosmanicure
-            (nome, contato, data, horario, pagamento, servico)
+            (nome, contato, data, horario, pagamento, servico, grupo_id)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (nome, contato, data, horario_bloqueado, "Bloqueado", "Bloqueio automático", grupo_id))
 
