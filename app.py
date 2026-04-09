@@ -592,7 +592,7 @@ def get_horariop(data):
             "contato": contato,
             "horario": horario.strftime('%H:%M'),  # 🔥 SIMPLES
             "pagamento": pagamento,
-            "servico": servico
+            "servico": servico,
             "grupo_id": grupo_id
         })
 
